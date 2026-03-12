@@ -1,0 +1,450 @@
+2026-03-12 05:46:01  INFO      Model       : florence-2-base (microsoft/Florence-2-base)
+2026-03-12 05:46:01  INFO      Recursive   : True
+2026-03-12 05:46:01  INFO      Max tags    : 20
+2026-03-12 05:46:01  INFO      Silent      : True
+2026-03-12 05:46:01  INFO      Continue err: True
+2026-03-12 05:46:01  INFO      Log file    : /Users/ben/Dev/imgtagplus/imgtagplus_20260312_054601.log
+2026-03-12 05:46:01  INFO      Found 4 image(s) scanning /Users/ben/Dev/imgtagplus/sandbox (recursively)
+2026-03-12 05:46:01  INFO      Images to process: 4
+2026-03-12 05:46:01  INFO      Resolved florence-2-base to Hugging Face ID: microsoft/Florence-2-base
+2026-03-12 05:46:02  INFO      GPU environment detected. Loading native microsoft/Florence-2-base on mps with SDPA...
+2026-03-12 05:46:02  DEBUG     connect_tcp.started host='huggingface.co' port=443 local_address=None timeout=10 socket_options=None
+2026-03-12 05:46:02  DEBUG     connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1143d3a10>
+2026-03-12 05:46:02  DEBUG     start_tls.started ssl_context=<ssl.SSLContext object at 0x1143bf2f0> server_hostname='huggingface.co' timeout=10
+2026-03-12 05:46:02  DEBUG     start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1128eafd0>
+2026-03-12 05:46:02  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_headers.complete
+2026-03-12 05:46:02  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_body.complete
+2026-03-12 05:46:02  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:02 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5a-64b62b5b60671efc3977cbdd;dd556547-4618-416d-a8ef-907aa3b93b9a'), (b'RateLimit', b'"resolvers";r=2976;t=102'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'WCXtivZosaQNg5mMSjSyg5mtMlCl8EF6s9uwuz2jAEEPevXwXVczPA==')])
+2026-03-12 05:46:02  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:02  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_body.complete
+2026-03-12 05:46:02  DEBUG     response_closed.started
+2026-03-12 05:46:02  DEBUG     response_closed.complete
+2026-03-12 05:46:02  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_headers.complete
+2026-03-12 05:46:02  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_body.complete
+2026-03-12 05:46:02  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'280'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:02 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/preprocessor_config.json?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fpreprocessor_config.json=&etag=%2285cd7be3568df661ad536b6ab20d59b08ba079ae%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5a-40152ee80a052c59039f3214;acc8fdbd-93a3-4b58-a413-0c0be0f62792'), (b'RateLimit', b'"resolvers";r=2975;t=102'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'preprocessor_config.json; filename="preprocessor_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"85cd7be3568df661ad536b6ab20d59b08ba079ae"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'E8GdMxyA5KgjQ0TqmBqOdeaMeY_c3HVFvNK45wD1Io831fSIXeuQIw==')])
+2026-03-12 05:46:02  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:02  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_body.complete
+2026-03-12 05:46:02  DEBUG     response_closed.started
+2026-03-12 05:46:02  DEBUG     response_closed.complete
+2026-03-12 05:46:02  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_headers.complete
+2026-03-12 05:46:02  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_body.complete
+2026-03-12 05:46:02  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'806'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 27 Jan 2026 01:41:37 GMT'), (b'ETag', b'"85cd7be3568df661ad536b6ab20d59b08ba079ae"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-697817d0-059260574dd4c8de754bd81a;3efadae7-e406-40ec-9d8a-654040c73720'), (b'RateLimit', b'"resolvers";r=2998;t=196'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'preprocessor_config.json; filename="preprocessor_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b's1KPqz9RaCg1-vtTIKWgPSJq9BuSZzeH1-V-wcBcSvq9A_44lw1xWA=='), (b'Age', b'3830665')])
+2026-03-12 05:46:02  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-03-12 05:46:02  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_body.complete
+2026-03-12 05:46:02  DEBUG     response_closed.started
+2026-03-12 05:46:02  DEBUG     response_closed.complete
+2026-03-12 05:46:02  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_headers.complete
+2026-03-12 05:46:02  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_body.complete
+2026-03-12 05:46:02  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:02 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5a-3dcdfc827a4a390e5a0d49ed;1c885708-a3c7-4547-9969-1306d56da7f9'), (b'RateLimit', b'"resolvers";r=2974;t=102'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'rNKef69cnmAlLk4rZfx9ybzzKq6HfyYdQCyTUfB9Gci2mZ05mX-MbQ==')])
+2026-03-12 05:46:02  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:02  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_body.complete
+2026-03-12 05:46:02  DEBUG     response_closed.started
+2026-03-12 05:46:02  DEBUG     response_closed.complete
+2026-03-12 05:46:02  WARNING   Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-03-12 05:46:02  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_headers.complete
+2026-03-12 05:46:02  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_body.complete
+2026-03-12 05:46:02  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'280'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:02 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/preprocessor_config.json?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fpreprocessor_config.json=&etag=%2285cd7be3568df661ad536b6ab20d59b08ba079ae%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5a-55231fcd037913924ad428ea;6770fa65-d749-4afb-abc0-b3df5fe480c3'), (b'RateLimit', b'"resolvers";r=2973;t=102'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'preprocessor_config.json; filename="preprocessor_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"85cd7be3568df661ad536b6ab20d59b08ba079ae"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'wBBbgmNZjvdHg0rSA6hWWtcA9hW3S7Vt4S78wAKMrNbnseJLnsEvDw==')])
+2026-03-12 05:46:02  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:02  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     receive_response_body.complete
+2026-03-12 05:46:02  DEBUG     response_closed.started
+2026-03-12 05:46:02  DEBUG     response_closed.complete
+2026-03-12 05:46:02  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_headers.complete
+2026-03-12 05:46:02  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:02  DEBUG     send_request_body.complete
+2026-03-12 05:46:02  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'806'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 29 Aug 2025 11:01:00 GMT'), (b'ETag', b'"85cd7be3568df661ad536b6ab20d59b08ba079ae"'), (b'X-Powered-By', b'huggingface-moon'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'X-Request-Id', b'Root=1-68b1886c-3d4f6bff3d722a4d12726afd;ef87aadc-03fd-42a9-938c-074af063b721'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'preprocessor_config.json; filename="preprocessor_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'NpuzeClQI2YMSrjrVHHV8e8Yd9tEiZCw-okriEY-5Ewv9MZDi7AUCw=='), (b'Age', b'16843503')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'278'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/processing_florence2.py?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fprocessing_florence2.py=&etag=%223cd9815895c8c2b355f1e07ff983186f1e05c9e9%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-0695657f343b871a74df4168;7078410f-7dbc-4b6b-b92b-35fbd54597cf'), (b'RateLimit', b'"resolvers";r=2972;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'processing_florence2.py; filename="processing_florence2.py";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"3cd9815895c8c2b355f1e07ff983186f1e05c9e9"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'U2rOAGWjSNWeowInZHIXfwm8rYg145g31QDAXOJ-WTuFU3dVkiKlpA==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/processing_florence2.py "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'48676'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 27 Jan 2026 01:41:37 GMT'), (b'ETag', b'"3cd9815895c8c2b355f1e07ff983186f1e05c9e9"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-697817d1-2010b7734ab967d303e2217d;477500f6-2525-48f6-abf8-0aa01b00427e'), (b'RateLimit', b'"resolvers";r=2998;t=79'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'processing_florence2.py; filename="processing_florence2.py";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'b58ZqFcqO1Id5kIENozHjbqNtoK1IznVeMITMkW3P865_zBKweJmvw=='), (b'Age', b'3830666')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/processing_florence2.py "HTTP/1.1 200 OK"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'GET']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'GET']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'GET']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'64'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'ETag', b'W/"40-09f9IAqP13xarAhQxFS2W8rvRkM"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-5ac33771774e013d6fae24e6;e572d48d-fb58-48e2-adf8-08fd1e18da1d'), (b'RateLimit', b'"api";r=496;t=101'), (b'RateLimit-Policy', b'"fixed window";"api";q=500;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'additional_chat_templates does not exist on "main"'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'FNpUdSwgYfKm70E_PWSLJ9QqdUTkseP1-zj4MUX0vMWI3V-f6R7BDA==')])
+2026-03-12 05:46:03  INFO      HTTP Request: GET https://huggingface.co/api/models/microsoft/Florence-2-base/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'GET']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-129ae7ba10b497bb66b114fc;540429f2-bc2d-4cd2-91ef-97597e9918d3'), (b'RateLimit', b'"resolvers";r=2971;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'PctmQC4VOdfdfYxNAwdb-WpLo9JLSyjdHNxOCGpuzhdnk_mEorzX0Q==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-37765c8200151d5f48569057;573acba6-3548-4115-aca6-aea9338e17a9'), (b'RateLimit', b'"resolvers";r=2970;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'7Ou-YQ_SOrC6yjCnydfGY3cL-MbxvRSbIp8DmnRJam-lM8VX9eBUFg==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/chat_template.json "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-1d6358c31a8725c9178d99c6;65cf12bd-3998-40fd-b4c7-334b2fca3d1a'), (b'RateLimit', b'"resolvers";r=2969;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'5GZG7lohXvuQc0x-shDpprCpKSZKRpHgun_cfppBYZNVCjsYSHsFpQ==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-6e66e9951ae6e46324949078;027761d6-1674-43c9-aaf8-0694809762d2'), (b'RateLimit', b'"resolvers";r=2968;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'tV2MpRxE9lmYT8NGgJUrUEQIHwoVjkY3bUeKnnYPTXy7SlfB7fLuSQ==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/audio_tokenizer_config.json "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-3867a57002c8168214cbb19e;c1ed1b44-9b3c-4ce9-96ce-653a5081979c'), (b'RateLimit', b'"resolvers";r=2967;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'tvPzsGosehgTbJVe3ORtQggUMZBfOT4y4Bsff7xwhH-Lg_aI1LLdgw==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'280'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/preprocessor_config.json?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fpreprocessor_config.json=&etag=%2285cd7be3568df661ad536b6ab20d59b08ba079ae%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-36fb513e792849bb47104ae7;871c514b-d69b-404f-9571-e9909eb646bd'), (b'RateLimit', b'"resolvers";r=2966;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'preprocessor_config.json; filename="preprocessor_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"85cd7be3568df661ad536b6ab20d59b08ba079ae"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'3TLL2vuhNxxqeXpgefNjZCqVSVfLpvA2dzE9VR30x5dt6zhsEA_Vug==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'806'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 29 Aug 2025 11:01:00 GMT'), (b'ETag', b'"85cd7be3568df661ad536b6ab20d59b08ba079ae"'), (b'X-Powered-By', b'huggingface-moon'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'X-Request-Id', b'Root=1-68b1886c-3d4f6bff3d722a4d12726afd;ef87aadc-03fd-42a9-938c-074af063b721'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'preprocessor_config.json; filename="preprocessor_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'Ricx4ft8ss95fCSSPGUJWrDNZJsBk65dMBVEm2RCpAfXqKNCnY6P3w=='), (b'Age', b'16843503')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-625127112b242f2465a37a01;549aad2e-38ff-45dc-9adc-e874c0e8ff08'), (b'RateLimit', b'"resolvers";r=2965;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'AQnUch6SN4TKo3KqoZkTb9kNFkPvHKZae7XVdjOTV-T34srzZXEMPA==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'280'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:03 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/preprocessor_config.json?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fpreprocessor_config.json=&etag=%2285cd7be3568df661ad536b6ab20d59b08ba079ae%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5b-5f202d5d70af67cd147cfd4d;21046f22-8ec8-4c79-b9d2-3f2e0279b0e9'), (b'RateLimit', b'"resolvers";r=2964;t=101'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'preprocessor_config.json; filename="preprocessor_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"85cd7be3568df661ad536b6ab20d59b08ba079ae"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'XbDdH-MS2GQ3H7gxyDaZEMZL6JaFzu3td6d9o8p8u9p45SjkdeaxfQ==')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'806'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 29 Aug 2025 11:01:00 GMT'), (b'ETag', b'"85cd7be3568df661ad536b6ab20d59b08ba079ae"'), (b'X-Powered-By', b'huggingface-moon'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'X-Request-Id', b'Root=1-68b1886c-3d4f6bff3d722a4d12726afd;ef87aadc-03fd-42a9-938c-074af063b721'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'preprocessor_config.json; filename="preprocessor_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'1bykPMOhjRhn45tWdCHpEE-F6huxZ6uTBNvIXgBOmAKL72SFzU9mWw=='), (b'Age', b'16843503')])
+2026-03-12 05:46:03  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-03-12 05:46:03  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     receive_response_body.complete
+2026-03-12 05:46:03  DEBUG     response_closed.started
+2026-03-12 05:46:03  DEBUG     response_closed.complete
+2026-03-12 05:46:03  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_headers.complete
+2026-03-12 05:46:03  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:03  DEBUG     send_request_body.complete
+2026-03-12 05:46:03  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'254'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:04 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/config.json?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fconfig.json=&etag=%2274a4482afd52515c89ae8d7d388a537a16f5d350%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5c-55a2561d70dfff1a72a9d846;35063361-e17e-4e6b-871d-e5cc99b89e66'), (b'RateLimit', b'"resolvers";r=2963;t=100'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"74a4482afd52515c89ae8d7d388a537a16f5d350"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'xjGCYEjwuEc-KVLovZyrUHtj9Wc5EfmJChMed24hT7x_Du4Ect7OZA==')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2430'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 29 Aug 2025 10:27:59 GMT'), (b'ETag', b'"74a4482afd52515c89ae8d7d388a537a16f5d350"'), (b'X-Powered-By', b'huggingface-moon'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'X-Request-Id', b'Root=1-68b180af-2bdeb06a69de599e4d19f3fe;3c79d66e-c4e0-4ed2-b6ce-cc626ee80382'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'deIBKg_01rR82RzU-Sq41l1hiCuLM6CXKoxB-82dn1zsuppLjAIYLw=='), (b'Age', b'16845485')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/config.json "HTTP/1.1 200 OK"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'284'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:04 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/configuration_florence2.py?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fconfiguration_florence2.py=&etag=%22b8869617ef8dfd0f04d421cf59b83ca662c363ad%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5c-29273a913df91f5b0f8e1a3c;af8f87d0-8ce8-45ac-9aad-f70c4c0a9d4f'), (b'RateLimit', b'"resolvers";r=2962;t=100'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'configuration_florence2.py; filename="configuration_florence2.py";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"b8869617ef8dfd0f04d421cf59b83ca662c363ad"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'NfAG5P5Ic3KiN1N2DBZQW3T5vt1BMtE2GHh-sXPas-gMyKDqM2pKLA==')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/configuration_florence2.py "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15119'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 29 Aug 2025 10:28:00 GMT'), (b'ETag', b'"b8869617ef8dfd0f04d421cf59b83ca662c363ad"'), (b'X-Powered-By', b'huggingface-moon'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'X-Request-Id', b'Root=1-68b180b0-2c44fee4114328806c9f1031;1bfda5f7-3121-4226-a1e6-bfc61b7768cf'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'configuration_florence2.py; filename="configuration_florence2.py";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'3eISZnU_eKYU7Csg4WJqGRDRuX1hHIOmVppDMnQ8h1RZeLbX-vP0HA=='), (b'Age', b'16845484')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/configuration_florence2.py "HTTP/1.1 200 OK"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'254'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:04 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/config.json?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fconfig.json=&etag=%2274a4482afd52515c89ae8d7d388a537a16f5d350%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5c-739f0f521e59718f46cca9d7;1a70d54e-b4cf-4fd6-aac0-902422bfe653'), (b'RateLimit', b'"resolvers";r=2961;t=100'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"74a4482afd52515c89ae8d7d388a537a16f5d350"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'3Qhd0ZoS2nATS6qMig1CI1DyVWdv3kq8Vy0_XTXaUAY_d_QHLVm2Fg==')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2430'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 29 Aug 2025 10:27:59 GMT'), (b'ETag', b'"74a4482afd52515c89ae8d7d388a537a16f5d350"'), (b'X-Powered-By', b'huggingface-moon'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'X-Request-Id', b'Root=1-68b180af-2bdeb06a69de599e4d19f3fe;3c79d66e-c4e0-4ed2-b6ce-cc626ee80382'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'RGoCCzBa5v00hEhzsrInbaSFMVMhf5X_56NYXIdKf5QKw2e838n0dQ=='), (b'Age', b'16845485')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/config.json "HTTP/1.1 200 OK"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'274'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:04 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/tokenizer_config.json?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Ftokenizer_config.json=&etag=%2244784bc58d4cb18d3549ad71e062efcf032d9ef5%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5c-33e23bc8376851ae43be4cdf;3409c095-ce82-4647-a876-d3dae0455b01'), (b'RateLimit', b'"resolvers";r=2960;t=100'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'tokenizer_config.json; filename="tokenizer_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"44784bc58d4cb18d3549ad71e062efcf032d9ef5"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'uEPB33ww3E3JRDTlrCYOrFws-WuTNW6bHWHzIaWMoGKjZJ9vVLDq3w==')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'34'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 26 Jan 2026 18:36:12 GMT'), (b'ETag', b'"44784bc58d4cb18d3549ad71e062efcf032d9ef5"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6977b41c-7cd2987d3ffd44cd050df45a;73bcbb39-bec3-4d34-8af5-f5d3a4176c48'), (b'RateLimit', b'"resolvers";r=2999;t=224'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'tokenizer_config.json; filename="tokenizer_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'4Ptr8v-ul5m4CM7pnSGXfbWEulxozmA1QCIYRw84YfVX6bSlszC6Ww=='), (b'Age', b'3856192')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'GET']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'GET']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'GET']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'64'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:04 GMT'), (b'ETag', b'W/"40-09f9IAqP13xarAhQxFS2W8rvRkM"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5c-57d2c2056c3602627c32f97a;6dff06ce-e06f-4ae8-88c4-b25534f6d70d'), (b'RateLimit', b'"api";r=495;t=100'), (b'RateLimit-Policy', b'"fixed window";"api";q=500;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'additional_chat_templates does not exist on "main"'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'rEHmwPDZcASA0j6n0i9MgtXf4amd3LWPFXwp8l9h0pe5s4IfMufRnA==')])
+2026-03-12 05:46:04  INFO      HTTP Request: GET https://huggingface.co/api/models/microsoft/Florence-2-base/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'GET']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'GET']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'GET']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'GET']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:04 GMT'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'content-encoding', b'gzip'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5c-788cc7a02614241b34000c97;9c90b243-7713-4a71-b3b4-6252be3b6c51'), (b'RateLimit', b'"api";r=494;t=100'), (b'RateLimit-Policy', b'"fixed window";"api";q=500;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'accept-encoding'), (b'ETag', b'W/"801-8wfJdkULAAa2bZfXhisB0NSy3Jo"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'I3josF8Ag079ZJV_0PiOBl1LZFFmXAYIn356Y7Jr_FWKDK1fDHo33Q==')])
+2026-03-12 05:46:04  INFO      HTTP Request: GET https://huggingface.co/api/models/microsoft/Florence-2-base/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'GET']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'254'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:04 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/config.json?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fconfig.json=&etag=%2274a4482afd52515c89ae8d7d388a537a16f5d350%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5c-72d58b30427c15041d41f845;f8738e0c-286a-4d61-90e2-b1cf3b3e5b35'), (b'RateLimit', b'"resolvers";r=2959;t=100'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"74a4482afd52515c89ae8d7d388a537a16f5d350"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'RUiJeFFmPme-xTGMcZRrbL-9ypUfEHYi-hp5IXqSPVRemF1h5PSx7Q==')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2430'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 29 Aug 2025 10:27:59 GMT'), (b'ETag', b'"74a4482afd52515c89ae8d7d388a537a16f5d350"'), (b'X-Powered-By', b'huggingface-moon'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'X-Request-Id', b'Root=1-68b180af-2bdeb06a69de599e4d19f3fe;3c79d66e-c4e0-4ed2-b6ce-cc626ee80382'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'hoHi8D9esvfd9CsFlVdfnkCAN8A39yYZdAvzOz9cbetxMN08YUMaFw=='), (b'Age', b'16845485')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/config.json "HTTP/1.1 200 OK"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'284'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:04 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/configuration_florence2.py?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fconfiguration_florence2.py=&etag=%22b8869617ef8dfd0f04d421cf59b83ca662c363ad%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5c-7ed6785a253a913834b552d4;084585ff-e97d-40f5-8a62-f8818f568764'), (b'RateLimit', b'"resolvers";r=2958;t=100'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'configuration_florence2.py; filename="configuration_florence2.py";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"b8869617ef8dfd0f04d421cf59b83ca662c363ad"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'o7s2YmsSgFjcD5mxq4MVe_1tmK84l263cyOHf86-n_2QzcXda6mZGQ==')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/configuration_florence2.py "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15119'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 29 Aug 2025 10:28:00 GMT'), (b'ETag', b'"b8869617ef8dfd0f04d421cf59b83ca662c363ad"'), (b'X-Powered-By', b'huggingface-moon'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'X-Request-Id', b'Root=1-68b180b0-2c44fee4114328806c9f1031;1bfda5f7-3121-4226-a1e6-bfc61b7768cf'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'configuration_florence2.py; filename="configuration_florence2.py";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'kEmiqS_m6utM_yDLMssUXeiban84vWDEmjBsZ247AhGYoF0B6XnXag=='), (b'Age', b'16845484')])
+2026-03-12 05:46:04  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/configuration_florence2.py "HTTP/1.1 200 OK"
+2026-03-12 05:46:04  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     receive_response_body.complete
+2026-03-12 05:46:04  DEBUG     response_closed.started
+2026-03-12 05:46:04  DEBUG     response_closed.complete
+2026-03-12 05:46:04  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_headers.complete
+2026-03-12 05:46:04  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:04  DEBUG     send_request_body.complete
+2026-03-12 05:46:04  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:05  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'274'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 12 Mar 2026 09:46:05 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/modeling_florence2.py?%2Fmicrosoft%2FFlorence-2-base%2Fresolve%2Fmain%2Fmodeling_florence2.py=&etag=%2290208540137fcf518aa92186e58ac964213c6420%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69b28b5d-3631e1c3459f6a9d0650721b;256755b9-174a-48f1-8d0e-158ca114a433'), (b'RateLimit', b'"resolvers";r=2957;t=99'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'modeling_florence2.py; filename="modeling_florence2.py";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"90208540137fcf518aa92186e58ac964213c6420"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'vjXBoyOxyZXsrlc_Aql3KDsJe2a9nFkKi9mB8Bnf4Sd5HsFIiQAElA==')])
+2026-03-12 05:46:05  INFO      HTTP Request: HEAD https://huggingface.co/microsoft/Florence-2-base/resolve/main/modeling_florence2.py "HTTP/1.1 307 Temporary Redirect"
+2026-03-12 05:46:05  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:05  DEBUG     receive_response_body.complete
+2026-03-12 05:46:05  DEBUG     response_closed.started
+2026-03-12 05:46:05  DEBUG     response_closed.complete
+2026-03-12 05:46:05  DEBUG     send_request_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:05  DEBUG     send_request_headers.complete
+2026-03-12 05:46:05  DEBUG     send_request_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:05  DEBUG     send_request_body.complete
+2026-03-12 05:46:05  DEBUG     receive_response_headers.started request=<Request [b'HEAD']>
+2026-03-12 05:46:05  DEBUG     receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'127455'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 19 Nov 2025 08:12:19 GMT'), (b'ETag', b'"90208540137fcf518aa92186e58ac964213c6420"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-691d7be3-146ffe9163c907c9448807a2;2c1f7b86-092c-45f3-894a-42ec9d831910'), (b'RateLimit', b'"resolvers";r=2104;t=49'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'modeling_florence2.py; filename="modeling_florence2.py";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 c4f304e7786da519d49ea9f064843ae4.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'ATL59-P13'), (b'X-Amz-Cf-Id', b'1HfdPnffLkNfs9HSe6Km4WZuRUWmpy5KyucwJjlXZEMjAc3w5tPARQ=='), (b'Age', b'9768826')])
+2026-03-12 05:46:05  INFO      HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/Florence-2-base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/modeling_florence2.py "HTTP/1.1 200 OK"
+2026-03-12 05:46:05  DEBUG     receive_response_body.started request=<Request [b'HEAD']>
+2026-03-12 05:46:05  DEBUG     receive_response_body.complete
+2026-03-12 05:46:05  DEBUG     response_closed.started
+2026-03-12 05:46:05  DEBUG     response_closed.complete
+2026-03-12 05:46:05  ERROR     Failed to load AI model: Florence2ForConditionalGeneration does not support an attention implementation through torch.nn.functional.scaled_dot_product_attention yet. Please request the support for this architecture: https://github.com/huggingface/transformers/issues/28005. If you believe this error is a bug, please open an issue in Transformers GitHub repository and load your model with the argument `attn_implementation="eager"` meanwhile. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="eager")`
+Traceback (most recent call last):
+  File "/Users/ben/Dev/imgtagplus/imgtagplus/app.py", line 146, in run
+    tagger = FlorenceTagger(model_id=hf_model_id, model_dir=args.model_dir)
+  File "/Users/ben/Dev/imgtagplus/imgtagplus/vlm.py", line 115, in __init__
+    self.model = AutoModelForCausalLM.from_pretrained(
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._model_id,
+        ^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        cache_dir=str(self._model_dir)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).to(self.device)
+    ^
+  File "/Users/ben/Dev/imgtagplus/.venv/lib/python3.14/site-packages/transformers/models/auto/auto_factory.py", line 367, in from_pretrained
+    return model_class.from_pretrained(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        pretrained_model_name_or_path, *model_args, config=config, **hub_kwargs, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ben/Dev/imgtagplus/.venv/lib/python3.14/site-packages/transformers/modeling_utils.py", line 4094, in from_pretrained
+    model = cls(config, *model_args, **model_kwargs)
+  File "/Users/ben/.cache/imgtagplus/modules/transformers_modules/microsoft/Florence_hyphen_2_hyphen_base/5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac/modeling_florence2.py", line 2535, in __init__
+    super().__init__(config)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/ben/Dev/imgtagplus/.venv/lib/python3.14/site-packages/transformers/modeling_utils.py", line 1260, in __init__
+    self.config._attn_implementation_internal = self._check_and_adjust_attn_implementation(
+                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.config._attn_implementation,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        allow_all_kernels=hub_kernels.ALLOW_ALL_KERNELS,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ben/Dev/imgtagplus/.venv/lib/python3.14/site-packages/transformers/modeling_utils.py", line 1887, in _check_and_adjust_attn_implementation
+    applicable_attn_implementation = self.get_correct_attn_implementation(
+        applicable_attn_implementation, is_init_check
+    )
+  File "/Users/ben/Dev/imgtagplus/.venv/lib/python3.14/site-packages/transformers/modeling_utils.py", line 1939, in get_correct_attn_implementation
+    raise e
+  File "/Users/ben/Dev/imgtagplus/.venv/lib/python3.14/site-packages/transformers/modeling_utils.py", line 1936, in get_correct_attn_implementation
+    self._sdpa_can_dispatch(is_init_check)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/ben/Dev/imgtagplus/.venv/lib/python3.14/site-packages/transformers/modeling_utils.py", line 1734, in _sdpa_can_dispatch
+    raise ValueError(
+    ...<3 lines>...
+    )
+ValueError: Florence2ForConditionalGeneration does not support an attention implementation through torch.nn.functional.scaled_dot_product_attention yet. Please request the support for this architecture: https://github.com/huggingface/transformers/issues/28005. If you believe this error is a bug, please open an issue in Transformers GitHub repository and load your model with the argument `attn_implementation="eager"` meanwhile. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="eager")`

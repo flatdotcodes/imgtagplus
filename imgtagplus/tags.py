@@ -1,0 +1,165 @@
+"""Curated tag vocabulary for CLIP zero-shot image tagging.
+
+Organized by category. Each tag is a short phrase that CLIP can match
+against image embeddings.  The list is deliberately kept practical and
+relevant to digital-asset-management workflows.
+"""
+
+# ---------------------------------------------------------------------------
+# Tag vocabulary — ~600 tags across common categories
+# ---------------------------------------------------------------------------
+
+TAGS: list[str] = [
+    # ── Objects ────────────────────────────────────────────────────────────
+    "person", "man", "woman", "child", "baby", "group of people", "crowd",
+    "face", "hands", "silhouette",
+    "dog", "cat", "bird", "horse", "fish", "butterfly", "insect", "deer",
+    "bear", "rabbit", "cow", "sheep", "elephant", "lion", "tiger", "wolf",
+    "snake", "frog", "turtle", "whale", "dolphin", "penguin", "owl",
+    "eagle", "parrot", "duck", "chicken", "pig", "goat", "monkey",
+    "car", "truck", "bus", "motorcycle", "bicycle", "train", "airplane",
+    "helicopter", "boat", "ship", "sailboat", "canoe",
+    "house", "building", "skyscraper", "church", "castle", "bridge",
+    "tower", "lighthouse", "barn", "cabin", "tent", "ruins",
+    "tree", "flower", "grass", "leaf", "bush", "cactus", "palm tree",
+    "pine tree", "mushroom", "vine", "moss", "fern", "rose", "tulip",
+    "sunflower", "daisy", "orchid", "lily", "lavender",
+    "mountain", "hill", "cliff", "rock", "boulder", "cave", "volcano",
+    "river", "lake", "ocean", "waterfall", "stream", "pond", "puddle",
+    "island", "peninsula", "glacier", "iceberg",
+    "road", "path", "trail", "sidewalk", "highway", "alley", "crosswalk",
+    "stairs", "fence", "gate", "wall", "door", "window", "roof",
+    "chair", "table", "desk", "bed", "sofa", "bench", "stool",
+    "lamp", "chandelier", "candle", "mirror", "clock", "bookshelf",
+    "computer", "laptop", "phone", "tablet", "keyboard", "monitor",
+    "camera", "television", "speaker", "headphones", "microphone",
+    "book", "newspaper", "magazine", "letter", "pen", "pencil",
+    "cup", "mug", "glass", "bottle", "plate", "bowl", "fork", "knife",
+    "spoon", "pan", "pot", "kettle", "teapot",
+    "hat", "glasses", "sunglasses", "shoe", "boot", "bag", "backpack",
+    "umbrella", "watch", "ring", "necklace", "tie", "scarf",
+    "ball", "balloon", "kite", "flag", "sign", "banner", "poster",
+    "guitar", "piano", "violin", "drum", "flute", "trumpet",
+    "painting", "sculpture", "statue", "fountain", "mural",
+    "gift", "box", "basket", "vase", "jar", "barrel",
+    "key", "lock", "chain", "rope", "wire", "cable",
+    "fire", "smoke", "flame", "spark", "fireworks", "explosion",
+    "weapon", "sword", "shield", "helmet", "armor",
+    "wheel", "gear", "engine", "propeller", "antenna",
+    "robot", "drone",
+
+    # ── Food & Drink ──────────────────────────────────────────────────────
+    "food", "fruit", "apple", "banana", "orange", "grape", "strawberry",
+    "watermelon", "lemon", "pineapple", "cherry", "peach", "pear",
+    "mango", "avocado", "coconut", "blueberry", "raspberry",
+    "vegetable", "tomato", "carrot", "potato", "onion", "pepper",
+    "corn", "broccoli", "lettuce", "cucumber", "pumpkin", "garlic",
+    "bread", "cake", "pie", "cookie", "donut", "pizza", "hamburger",
+    "sandwich", "pasta", "rice", "soup", "salad", "sushi", "steak",
+    "cheese", "egg", "butter", "chocolate", "ice cream", "candy",
+    "coffee", "tea", "juice", "wine", "beer", "cocktail", "water",
+    "milk", "smoothie",
+
+    # ── Scenes & Environments ─────────────────────────────────────────────
+    "landscape", "cityscape", "skyline", "panorama", "aerial view",
+    "beach", "desert", "forest", "jungle", "meadow", "field", "garden",
+    "park", "farm", "vineyard", "orchard", "swamp", "marsh", "wetland",
+    "tundra", "prairie", "savanna", "canyon", "valley", "ravine",
+    "countryside", "village", "suburb", "downtown", "urban", "rural",
+    "harbor", "marina", "dock", "pier", "boardwalk", "promenade",
+    "market", "bazaar", "shop", "store", "mall", "restaurant", "cafe",
+    "bar", "hotel", "resort", "spa", "museum", "library", "theater",
+    "stadium", "arena", "gym", "pool", "playground", "zoo", "aquarium",
+    "airport", "train station", "bus stop", "parking lot", "garage",
+    "factory", "warehouse", "office", "classroom", "kitchen", "bedroom",
+    "bathroom", "living room", "dining room", "hallway", "attic",
+    "basement", "balcony", "patio", "porch", "courtyard", "terrace",
+    "rooftop", "greenhouse",
+
+    # ── Nature & Weather ──────────────────────────────────────────────────
+    "sky", "clouds", "sun", "moon", "stars", "rainbow", "aurora",
+    "rain", "snow", "ice", "frost", "fog", "mist", "haze", "dew",
+    "storm", "lightning", "thunder", "tornado", "hurricane",
+    "wind", "breeze", "overcast", "clear sky", "partly cloudy",
+    "sunrise", "sunset", "dawn", "dusk", "twilight", "golden hour",
+    "blue hour", "night sky", "starry night", "full moon", "crescent moon",
+    "spring", "summer", "autumn", "fall", "winter",
+    "shadow", "reflection", "lens flare", "sunbeam", "ray of light",
+
+    # ── Activities & Actions ──────────────────────────────────────────────
+    "walking", "running", "jumping", "climbing", "swimming", "diving",
+    "surfing", "skiing", "skating", "cycling", "hiking", "camping",
+    "fishing", "hunting", "gardening", "cooking", "eating", "drinking",
+    "reading", "writing", "drawing", "painting", "photographing",
+    "dancing", "singing", "playing music", "performing",
+    "working", "studying", "shopping", "traveling", "driving",
+    "flying", "sailing", "rowing", "paddling",
+    "playing", "exercising", "stretching", "yoga", "meditation",
+    "celebrating", "wedding", "party", "festival", "parade", "ceremony",
+    "graduation", "birthday", "holiday", "vacation",
+    "meeting", "presentation", "conference", "interview",
+    "construction", "demolition", "renovation", "repair",
+    "praying", "worshipping",
+
+    # ── Sports ────────────────────────────────────────────────────────────
+    "soccer", "football", "basketball", "baseball", "tennis", "golf",
+    "volleyball", "hockey", "rugby", "cricket", "boxing", "wrestling",
+    "martial arts", "karate", "judo", "fencing", "archery",
+    "gymnastics", "track and field", "marathon", "relay race",
+    "weightlifting", "bodybuilding", "crossfit",
+    "rock climbing", "bouldering", "mountaineering",
+    "skateboarding", "snowboarding", "wakeboarding",
+    "kayaking", "canoeing", "rafting", "windsurfing",
+    "horse riding", "polo", "rodeo",
+    "racing", "car racing", "motorcycle racing", "cycling race",
+    "triathlon", "pentathlon", "decathlon",
+
+    # ── Emotions & Expressions ────────────────────────────────────────────
+    "happy", "sad", "angry", "surprised", "scared", "excited",
+    "calm", "peaceful", "serious", "thoughtful", "confused",
+    "laughing", "smiling", "crying", "frowning", "yelling",
+    "love", "romance", "affection", "hug", "kiss", "handshake",
+
+    # ── Colors & Visual Attributes ────────────────────────────────────────
+    "red", "blue", "green", "yellow", "orange", "purple", "pink",
+    "black", "white", "gray", "brown", "gold", "silver", "bronze",
+    "colorful", "monochrome", "pastel", "vivid", "muted", "neon",
+    "warm tones", "cool tones", "earth tones",
+    "bright", "dark", "dim", "glowing", "shiny", "glossy", "matte",
+    "transparent", "translucent", "opaque",
+    "patterned", "striped", "checkered", "spotted", "textured",
+
+    # ── Photography Styles ────────────────────────────────────────────────
+    "portrait", "close-up", "macro", "wide angle", "telephoto",
+    "long exposure", "double exposure", "HDR", "time-lapse",
+    "black and white", "sepia", "vintage", "retro", "film grain",
+    "bokeh", "shallow depth of field", "tilt-shift",
+    "aerial photography", "drone photography", "satellite imagery",
+    "underwater photography", "night photography", "astrophotography",
+    "street photography", "documentary", "photojournalism",
+    "fashion photography", "food photography", "product photography",
+    "architecture photography", "wildlife photography",
+    "studio lighting", "natural lighting", "backlit", "side-lit",
+    "high contrast", "low contrast", "high key", "low key",
+    "symmetry", "pattern", "repetition", "minimalist", "abstract",
+    "still life", "flat lay", "overhead shot", "eye level",
+    "rule of thirds", "leading lines", "framing", "negative space",
+
+    # ── Concepts & Themes ─────────────────────────────────────────────────
+    "travel", "adventure", "exploration", "journey", "freedom",
+    "nature", "wildlife", "conservation", "ecology", "environment",
+    "technology", "science", "innovation", "futuristic", "vintage tech",
+    "art", "culture", "heritage", "tradition", "history",
+    "education", "learning", "knowledge", "wisdom",
+    "health", "wellness", "fitness", "nutrition",
+    "business", "finance", "economy", "commerce",
+    "family", "friendship", "community", "teamwork", "diversity",
+    "spirituality", "religion", "faith",
+    "luxury", "elegance", "rustic", "industrial", "modern",
+    "cozy", "warm", "cold", "wet", "dry", "dusty", "clean",
+    "old", "new", "ancient", "contemporary", "futuristic",
+    "large", "small", "tiny", "huge", "tall", "short",
+    "crowded", "empty", "busy", "quiet", "noisy",
+    "dangerous", "safe", "mysterious", "magical", "dreamy",
+    "romantic", "dramatic", "epic", "serene", "chaotic",
+]

@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "imgtagplus"
+version = "1.0.0"
+description = "Bulk AI image tagger using CLIP (ONNX) — writes XMP sidecar files for DAM compatibility"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "ImgTagPlus Contributors"}]
+keywords = ["image", "tagging", "AI", "CLIP", "XMP", "DAM", "ONNX"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Graphics",
+]
+dependencies = [
+    "onnxruntime>=1.16.0",
+    "Pillow>=10.0.0",
+    "numpy>=1.24.0",
+    "psutil>=5.9.0",
+    "huggingface-hub>=0.20.0",
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "torch>=2.1.0",
+    "transformers==4.44.2",
+    "einops>=0.7.0",
+    "timm>=0.9.12"
+]
+
+[project.scripts]
+imgtagplus = "imgtagplus.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]

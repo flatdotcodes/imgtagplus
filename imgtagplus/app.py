@@ -1,0 +1,250 @@
+"""Main orchestrator for ImgTagPlus.
+
+Ties together scanning, tagging, metadata writing, monitoring, and
+error handling into a single ``run()`` function called by the CLI.
+"""
+
+from __future__ import annotations
+
+import argparse
+import logging
+import select
+import sys
+import threading
+from pathlib import Path
+
+from imgtagplus import logger as log_setup
+from imgtagplus.metadata import write_xmp
+from imgtagplus.monitor import Monitor
+from imgtagplus.scanner import scan
+from imgtagplus.tags import TAGS
+from imgtagplus.profiler import AVAILABLE_MODELS
+
+log = logging.getLogger(__name__)
+
+
+def _prompt_on_error(
+    message: str,
+    timeout: int,
+    silent: bool,
+    continue_on_error: bool,
+) -> bool:
+    """Ask the user whether to continue after an error.
+
+    Returns ``True`` if processing should continue, ``False`` to abort.
+    In silent mode or when *continue_on_error* is set, returns
+    immediately without prompting.
+    """
+    if continue_on_error:
+        log.info("Continuing after error (--continue-on-error).")
+        return True
+
+    if silent:
+        log.warning("Aborting in silent mode due to error.")
+        return False
+
+    # Interactive prompt with timeout.
+    prompt = f"\n{message}\nContinue? [Y/n] (auto-continue in {timeout}s): "
+    try:
+        print(prompt, end="", flush=True)
+        result: list[str] = []
+        event = threading.Event()
+
+        def _read_input() -> None:
+            try:
+                result.append(input())
+            except EOFError:
+                result.append("")
+            event.set()
+
+        t = threading.Thread(target=_read_input, daemon=True)
+        t.start()
+        event.wait(timeout=timeout)
+
+        if not event.is_set():
+            # Timeout expired — auto-continue.
+            print("\n(timeout — continuing)")
+            return True
+
+        answer = result[0].strip().lower()
+        if answer in ("n", "no"):
+            return False
+        return True
+    except Exception:
+        return True
+
+
+from typing import Callable, Optional
+
+def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int, str], None]] = None) -> int:
+    """Execute the full tagging pipeline.  Returns an exit code."""
+
+    # ── Logging setup ─────────────────────────────────────────────────────
+    log_path = log_setup.setup_logging(
+        log_file=args.log_file,
+        silent=args.silent,
+    )
+
+    # Resolve the model ID. It might be an internal key or a full Hugging Face ID.
+    model_id = getattr(args, "model_id", "clip")
+    model_info = AVAILABLE_MODELS.get(model_id)
+    if not model_info:
+        # Fallback check if they passed the raw HF ID (e.g., from old frontend state)
+        for key, info in AVAILABLE_MODELS.items():
+            if info.get("id") == model_id:
+                model_info = info
+                model_id = key
+                break
+    
+    # Default to clip info if still not found
+    if not model_info:
+        log.warning("Unknown model '%s', falling back to 'clip'.", model_id)
+        model_info = AVAILABLE_MODELS["clip"]
+        model_id = "clip"
+    
+    log.info("Model       : %s (%s)", model_id, model_info["id"])
+    log.info("Recursive   : %s", args.recursive)
+    if model_info["type"] == "tagger":
+        log.info("Threshold   : %s", args.threshold)
+    log.info("Max tags    : %s", args.max_tags)
+    
+    log.info("Silent      : %s", args.silent)
+    log.info("Continue err: %s", args.continue_on_error)
+    log.info("Log file    : %s", log_path)
+
+    # ── Discover images ───────────────────────────────────────────────────
+    try:
+        images = scan(args.input, recursive=args.recursive)
+    except (FileNotFoundError, ValueError) as exc:
+        log.error("Scan failed: %s", exc)
+        return 1
+
+    if not images:
+        log.warning("No images found at %s", args.input)
+        return 0
+
+    log.info("Images to process: %d", len(images))
+
+    # ── Start resource monitor ────────────────────────────────────────────
+    monitor = Monitor()
+    monitor.start()
+
+    # ── Load model ────────────────────────────────────────────────────────
+    try:
+        if model_info["type"] == "tagger":
+            from imgtagplus.tagger import Tagger
+            
+            # The original CLIP implementation caches on first run, but it doesn't take 'model_id' arg.
+            tagger = Tagger(model_dir=args.model_dir, accelerator=getattr(args, "accelerator", None))
+            tagger.precompute_tag_embeddings(TAGS)
+        else:
+            from imgtagplus.vlm import FlorenceTagger
+            
+            # Use the resolved Hugging Face ID instead of the internal key
+            hf_model_id = model_info["id"]
+            log.info("Resolved %s to Hugging Face ID: %s", model_id, hf_model_id)
+            tagger = FlorenceTagger(model_id=hf_model_id, model_dir=args.model_dir, accelerator=getattr(args, "accelerator", None))
+
+    except Exception as exc:
+        log.error("Failed to load AI model: %s", exc, exc_info=True)
+        monitor.stop()
+        return 1
+
+    # ── Process images ────────────────────────────────────────────────────
+    xmp_dirs: set[Path] = set()
+    success_count = 0
+    error_count = 0
+
+    for idx, img_path in enumerate(images, 1):
+        log.info("[%d/%d] Tagging: %s", idx, len(images), img_path)
+        
+        if progress_callback:
+            try:
+                progress_callback(idx, len(images), str(img_path))
+            except Exception as cb_exc:
+                log.warning("Progress callback failed: %s", cb_exc)
+
+        try:
+            # Different taggers need different args. CLIP needs tags/threshold.
+            if getattr(tagger, "precompute_tag_embeddings", None):
+                results = tagger.tag_image(
+                    img_path,
+                    tags=TAGS,
+                    threshold=args.threshold,
+                    max_tags=args.max_tags,
+                )
+            else:
+                # Florence-2 VLMs ignore threshold/tags params 
+                results = tagger.tag_image(
+                    img_path,
+                    max_tags=args.max_tags,
+                )
+
+            tag_names = [t for t, _ in results]
+            log.info(
+                "  -> %d tag(s): %s",
+                len(tag_names),
+                ", ".join(tag_names[:10])
+                + (" …" if len(tag_names) > 10 else ""),
+            )
+            log.debug("  Full results: %s", results)
+
+            xmp_path = write_xmp(
+                img_path,
+                tag_names,
+                output_dir=args.output_dir,
+            )
+            xmp_dirs.add(xmp_path.parent)
+            success_count += 1
+
+        except Exception as exc:
+            error_count += 1
+            log.error("  ERROR processing %s: %s", img_path, exc, exc_info=True)
+
+            should_continue = _prompt_on_error(
+                message=f"Error processing {img_path.name}: {exc}",
+                timeout=args.input_timeout,
+                silent=args.silent,
+                continue_on_error=args.continue_on_error,
+            )
+            if not should_continue:
+                log.info("Aborting at user request.")
+                break
+
+    # ── Stop monitor & collect stats ──────────────────────────────────────
+    stats = monitor.stop()
+
+    # ── Summary ───────────────────────────────────────────────────────────
+    separator = "=" * 60
+    summary_lines = [
+        "",
+        separator,
+        "  ImgTagPlus — Run Summary",
+        separator,
+        "",
+        f"Images processed : {success_count} / {len(images)}",
+        f"Errors           : {error_count}",
+        "",
+        stats.summary(),
+        "",
+    ]
+
+    if xmp_dirs:
+        summary_lines.append("XMP output directories:")
+        for d in sorted(xmp_dirs):
+            summary_lines.append(f"  {d}")
+    else:
+        summary_lines.append("No XMP files written.")
+
+    summary_lines += [
+        "",
+        f"Log file: {log_path}",
+        separator,
+    ]
+
+    summary = "\n".join(summary_lines)
+    log.debug(summary)
+    # Print to stdout directly so it's always visible (even in silent mode).
+    print(summary)
+
+    return 0 if error_count == 0 else 2

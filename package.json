@@ -1,0 +1,22 @@
+{
+  "name": "imgtagplus",
+  "version": "1.0.0",
+  "description": "**Bulk AI image tagger** — automatically tags images using CLIP (ViT-B/32) via ONNX Runtime and saves tags as XMP sidecar files, compatible with all major digital asset management (DAM) systems.",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "npx --yes --cache /tmp/npm_cache @tailwindcss/cli -i ./static/input.css -o ./static/style.css --minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "shadcn": "^4.0.5",
+    "tailwindcss": "^4.2.1"
+  },
+  "dependencies": {
+    "basecoat-css": "^0.3.11"
+  }
+}

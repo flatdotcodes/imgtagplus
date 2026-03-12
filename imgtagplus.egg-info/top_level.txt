@@ -1,0 +1,5 @@
+basecoat
+imgtagplus
+node_modules
+sandbox
+static

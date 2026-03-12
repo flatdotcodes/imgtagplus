@@ -1,0 +1,49 @@
+2026-03-12 10:39:26  INFO      Model       : florence-2-large (microsoft/Florence-2-large)
+2026-03-12 10:39:26  INFO      Recursive   : True
+2026-03-12 10:39:26  INFO      Max tags    : 10
+2026-03-12 10:39:26  INFO      Silent      : True
+2026-03-12 10:39:26  INFO      Continue err: True
+2026-03-12 10:39:26  INFO      Log file    : /Users/ben/Dev/imgtagplus/imgtagplus_20260312_103926.log
+2026-03-12 10:39:26  INFO      Found 4 image(s) scanning /Users/ben/Dev/imgtagplus/sandbox (recursively)
+2026-03-12 10:39:26  INFO      Images to process: 4
+2026-03-12 10:39:26  INFO      Resolved florence-2-large to Hugging Face ID: microsoft/Florence-2-large
+2026-03-12 10:39:26  INFO      GPU environment detected. Loading native microsoft/Florence-2-large on mps with eager attention...
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/processor_config.json HTTP/1.1" 404 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/preprocessor_config.json HTTP/1.1" 307 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/preprocessor_config.json HTTP/1.1" 200 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/preprocessor_config.json HTTP/1.1" 307 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/preprocessor_config.json HTTP/1.1" 200 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/processor_config.json HTTP/1.1" 404 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/processing_florence2.py HTTP/1.1" 307 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/processing_florence2.py HTTP/1.1" 200 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/preprocessor_config.json HTTP/1.1" 307 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/preprocessor_config.json HTTP/1.1" 200 0
+2026-03-12 10:39:26  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/processor_config.json HTTP/1.1" 404 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/tokenizer_config.json HTTP/1.1" 307 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/tokenizer_config.json HTTP/1.1" 200 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "GET /api/models/microsoft/Florence-2-large/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "GET /api/models/microsoft/Florence-2-large/tree/main?recursive=True&expand=False HTTP/1.1" 200 None
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/configuration_florence2.py HTTP/1.1" 307 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/configuration_florence2.py HTTP/1.1" 200 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "GET /api/models/microsoft/Florence-2-large/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/processor_config.json HTTP/1.1" 404 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/chat_template.json HTTP/1.1" 404 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/chat_template.jinja HTTP/1.1" 404 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/audio_tokenizer_config.json HTTP/1.1" 404 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/config.json HTTP/1.1" 307 0
+2026-03-12 10:39:27  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/config.json HTTP/1.1" 200 0
+2026-03-12 10:39:28  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/configuration_florence2.py HTTP/1.1" 307 0
+2026-03-12 10:39:28  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/configuration_florence2.py HTTP/1.1" 200 0
+2026-03-12 10:39:28  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/modeling_florence2.py HTTP/1.1" 307 0
+2026-03-12 10:39:28  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/modeling_florence2.py HTTP/1.1" 200 0
+2026-03-12 10:39:30  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/generation_config.json HTTP/1.1" 307 0
+2026-03-12 10:39:30  DEBUG     https://huggingface.co:443 "HEAD /api/resolve-cache/models/microsoft/Florence-2-large/21a599d414c4d928c9032694c424fb94458e3594/generation_config.json HTTP/1.1" 200 0
+2026-03-12 10:39:30  DEBUG     https://huggingface.co:443 "HEAD /microsoft/Florence-2-large/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+2026-03-12 10:39:32  INFO      [1/4] Tagging: /Users/ben/Dev/imgtagplus/sandbox/pexels-connorscottmcmanus-12797153.jpg
+2026-03-12 10:39:37  INFO        -> 10 tag(s): view, city, from, top, building, number, buildings, trees, foreground, cloudy
+2026-03-12 10:39:37  INFO      [2/4] Tagging: /Users/ben/Dev/imgtagplus/sandbox/pexels-connorscottmcmanus-12797165.jpg
+2026-03-12 10:39:42  INFO        -> 10 tag(s): view, city, from, top, building, number, buildings, trees, foreground, cloudy
+2026-03-12 10:39:42  INFO      [3/4] Tagging: /Users/ben/Dev/imgtagplus/sandbox/pexels-david-martin-jr-291182065-13185335.jpg
+2026-03-12 10:39:46  INFO        -> 10 tag(s): aerial, view, bridge, spanning, body, water, vehicles, poles, ropes, background
+2026-03-12 10:39:46  INFO      [4/4] Tagging: /Users/ben/Dev/imgtagplus/sandbox/pexels-david-martin-jr-291182065-13185339.jpg
+2026-03-12 10:39:50  INFO        -> 10 tag(s): aerial, view, arthur, ravenel, bridge, charleston, south, carolina, vehicles, water
