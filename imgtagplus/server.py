@@ -293,8 +293,11 @@ async def start_tagging(request: Request):
     _drain_queue(log_queue)
     _drain_queue(progress_queue)
     started_at = _mark_job_started()
+    _last_progress = {"current": 0, "total": 0}
 
     def progress_callback(current, total, filename):
+        _last_progress["current"] = current
+        _last_progress["total"] = total
         _enqueue_latest(
             progress_queue,
             {
@@ -334,6 +337,14 @@ async def start_tagging(request: Request):
                 },
             )
             app_run(args, progress_callback=progress_callback)
+
+            if _last_progress["total"] == 0:
+                _enqueue_latest(
+                    log_queue,
+                    {"type": "log", "level": "WARNING",
+                     "message": f"No images found at {input_path}. "
+                                "Check that the path contains supported image files."},
+                )
         except Exception as e:
             _enqueue_latest(
                 log_queue,

@@ -688,11 +688,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.done) {
                     // Completion is signaled on the stream, not the original POST response.
                     setProcessingState(false);
-                    progressTitle.textContent = "Finished";
-                    progressFile.textContent = "Task complete.";
-                    progressBar.style.width = "100%";
-                    progressBar.classList.remove('bg-primary');
-                    progressBar.classList.add('bg-green-500');
+
+                    if (data.total === 0) {
+                        progressTitle.textContent = "No Images Found";
+                        progressFile.textContent = "The selected path contains no supported image files.";
+                        progressBar.style.width = "100%";
+                        progressBar.classList.remove('bg-primary', 'bg-green-500');
+                        progressBar.classList.add('bg-yellow-500');
+                    } else {
+                        progressTitle.textContent = "Finished";
+                        progressFile.textContent = "Task complete.";
+                        progressBar.style.width = "100%";
+                        progressBar.classList.remove('bg-primary');
+                        progressBar.classList.add('bg-green-500');
+                    }
                     if (typeof data.runtime_seconds === 'number') {
                         renderRuntime(data.runtime_seconds);
                     }

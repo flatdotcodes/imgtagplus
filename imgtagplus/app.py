@@ -130,6 +130,11 @@ def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int
 
     if not images:
         log.warning("No images found at %s", args.input)
+        if progress_callback:
+            try:
+                progress_callback(0, 0, "")
+            except Exception:
+                pass
         return 0
 
     log.info("Images to process: %d", len(images))

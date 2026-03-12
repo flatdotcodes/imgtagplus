@@ -102,6 +102,19 @@ def test_run_continue_on_error_skips_failures(mock_scan, mock_monitor_cls, tmp_p
     assert (tmp_path / "good.xmp").exists()
 
 
+@patch("imgtagplus.app.scan")
+def test_run_zero_images_calls_progress_callback(mock_scan, tmp_path):
+    """When no images are found, progress_callback is still called with 0/0."""
+    mock_scan.return_value = []
+    callback = MagicMock()
+
+    args = _make_args(tmp_path)
+    exit_code = run(args, progress_callback=callback)
+
+    assert exit_code == 0
+    callback.assert_called_once_with(0, 0, "")
+
+
 @patch("imgtagplus.app.Monitor")
 @patch("imgtagplus.app.scan")
 def test_run_unknown_model_falls_back_to_clip(mock_scan, mock_monitor_cls, tmp_path):
