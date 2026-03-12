@@ -21,8 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressPct = document.getElementById('progress-pct');
     const progressCounts = document.getElementById('progress-counts');
     const progressBar = document.getElementById('progress-bar');
+    const runtimeClock = document.getElementById('runtime-clock');
     const logContainer = document.getElementById('log-container');
     const clearLogsBtn = document.getElementById('clear-logs');
+    const copyLogsBtn = document.getElementById('copy-logs');
     const downloadLogBtn = document.getElementById('download-log');
 
     // Stats Elements
@@ -91,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let models = [];
     let isProcessing = false;
     let eventSource = null;
+    let runtimeTimer = null;
     let currentBrowsePath = "";
     let browseTarget = 'input'; // 'input' or 'output' — which field the file picker populates
     let detectedAccelerator = 'cpu';
@@ -108,6 +111,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getSelectedAccelerator() {
         return Array.from(accelRadios).find((radio) => radio.checked)?.value || null;
+    }
+
+    function formatRuntime(totalSeconds) {
+        const safeSeconds = Math.max(0, Math.floor(totalSeconds));
+        const hours = String(Math.floor(safeSeconds / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((safeSeconds % 3600) / 60)).padStart(2, '0');
+        const seconds = String(safeSeconds % 60).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    }
+
+    function renderRuntime(totalSeconds = 0) {
+        runtimeClock.textContent = formatRuntime(totalSeconds);
+    }
+
+    function stopRuntimeTimer() {
+        if (runtimeTimer) {
+            window.clearInterval(runtimeTimer);
+            runtimeTimer = null;
+        }
+    }
+
+    function startRuntimeTimer(startedAtValue = new Date().toISOString()) {
+        const startedAt = new Date(startedAtValue);
+
+        stopRuntimeTimer();
+        if (Number.isNaN(startedAt.getTime())) {
+            renderRuntime(0);
+            return;
+        }
+
+        const tick = () => renderRuntime((Date.now() - startedAt.getTime()) / 1000);
+        tick();
+        runtimeTimer = window.setInterval(tick, 1000);
+    }
+
+    function syncRuntimeFromStatus(statusData) {
+        if (statusData.is_processing && statusData.started_at) {
+            startRuntimeTimer(statusData.started_at);
+            return;
+        }
+
+        if (statusData.is_processing) {
+            if (!runtimeTimer) {
+                startRuntimeTimer();
+            }
+            return;
+        }
+
+        stopRuntimeTimer();
+        if (typeof statusData.runtime_seconds === 'number') {
+            renderRuntime(statusData.runtime_seconds);
+        }
     }
 
     function setSelectedAccelerator(value) {
@@ -212,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // If the page is refreshed mid-run, restore the locked UI and reconnect to the stream.
             const statusRes = await fetch('/api/status');
             const statusData = await statusRes.json();
+            syncRuntimeFromStatus(statusData);
             if (statusData.is_processing) {
                 setProcessingState(true);
             }
@@ -245,6 +301,39 @@ document.addEventListener('DOMContentLoaded', () => {
     clearLogsBtn.addEventListener('click', () => {
         logContainer.innerHTML = '';
         addLog({level: "INFO", message: "Logs cleared."});
+    });
+
+    copyLogsBtn.addEventListener('click', async () => {
+        const logText = Array.from(logContainer.children)
+            .map((entry) => entry.innerText.trim())
+            .filter(Boolean)
+            .join('\n');
+
+        if (!logText) {
+            addLog({level: "INFO", message: "No log output available to copy."});
+            return;
+        }
+
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(logText);
+            } else {
+                const copyBuffer = document.createElement('textarea');
+                copyBuffer.value = logText;
+                copyBuffer.setAttribute('readonly', '');
+                copyBuffer.style.position = 'absolute';
+                copyBuffer.style.left = '-9999px';
+                document.body.appendChild(copyBuffer);
+                copyBuffer.select();
+                document.execCommand('copy');
+                document.body.removeChild(copyBuffer);
+            }
+
+            addLog({level: "INFO", message: "Copied terminal output to clipboard."});
+        } catch (error) {
+            console.error('Failed to copy terminal output:', error);
+            addLog({level: "ERROR", message: "Failed to copy terminal output to clipboard."});
+        }
     });
 
     downloadLogBtn.addEventListener('click', () => {
@@ -533,6 +622,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `${payload.accelerator?.toUpperCase()} (manual)`
                 : `${detectedAccelerator.toUpperCase()} (auto)`;
             addLog({level: "INFO", message: `Starting job via ${modelSelect.value} on ${acceleratorLabel}...`});
+            if (data.started_at) {
+                startRuntimeTimer(data.started_at);
+            }
 
         } catch (e) {
             errorMsg.textContent = e.message;
@@ -558,6 +650,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             statusText.textContent = "Running";
             statusDot.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+            if (!runtimeTimer) {
+                startRuntimeTimer();
+            }
             
             connectSSE();
         } else {
@@ -566,6 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             statusText.textContent = "Idle";
             statusDot.className = "w-2 h-2 rounded-full bg-zinc-500";
+            stopRuntimeTimer();
             
             if (eventSource) {
                 eventSource.close();
@@ -591,6 +687,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     progressBar.style.width = "100%";
                     progressBar.classList.remove('bg-primary');
                     progressBar.classList.add('bg-green-500');
+                    if (typeof data.runtime_seconds === 'number') {
+                        renderRuntime(data.runtime_seconds);
+                    }
                     return;
                 }
                 
@@ -607,6 +706,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     progressBar.style.width = `${pct}%`;
                     progressPct.textContent = `${pct}%`;
                     progressCounts.textContent = `${data.current} / ${data.total} images`;
+                }
+                if (typeof data.runtime_seconds === 'number') {
+                    renderRuntime(data.runtime_seconds);
                 }
             } 
             else if (data.type === 'log') {

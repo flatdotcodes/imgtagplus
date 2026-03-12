@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import queue
 import threading
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -30,6 +31,9 @@ def tagging_client(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(server, "log_queue", queue.Queue())
     monkeypatch.setattr(server, "progress_queue", queue.Queue())
     monkeypatch.setattr(server, "_job_lock", threading.Lock())
+    monkeypatch.setattr(server, "_job_started_at", None)
+    monkeypatch.setattr(server, "_job_started_monotonic", None)
+    monkeypatch.setattr(server, "_last_job_runtime_seconds", None)
     monkeypatch.setattr(server.threading, "Thread", _ImmediateThread)
 
     def fake_run(args, progress_callback=None):
@@ -50,6 +54,17 @@ def test_start_tagging_rejects_input_outside_sandbox(tagging_client, tmp_path: P
 
     assert response.status_code == 403
     assert response.json() == {"detail": "Access denied: path outside sandbox"}
+
+
+def test_start_tagging_invalid_path_does_not_leave_server_busy(tagging_client, tmp_path: Path) -> None:
+    client, _, _ = tagging_client
+    missing_path = tmp_path / "missing"
+
+    response = client.post("/api/tag", json={"input": str(missing_path)})
+
+    assert response.status_code == 200
+    assert response.json() == {"error": f"Invalid or non-existent path: {missing_path}"}
+    assert client.get("/api/status").json()["is_processing"] is False
 
 
 def test_start_tagging_rejects_output_dir_outside_sandbox(
@@ -81,7 +96,9 @@ def test_start_tagging_clamps_threshold_and_max_tags(tagging_client) -> None:
     )
 
     assert response.status_code == 200
-    assert response.json() == {"status": "started"}
+    payload = response.json()
+    assert payload["status"] == "started"
+    assert datetime.fromisoformat(payload["started_at"])
     assert captured["args"].threshold == 0.0
     assert captured["args"].max_tags == 200
 
@@ -97,7 +114,9 @@ def test_start_tagging_passes_manual_accelerator(tagging_client) -> None:
     )
 
     assert response.status_code == 200
-    assert response.json() == {"status": "started"}
+    payload = response.json()
+    assert payload["status"] == "started"
+    assert datetime.fromisoformat(payload["started_at"])
     assert captured["args"].accelerator == "cpu"
 
 
@@ -120,6 +139,8 @@ def test_index_uses_external_scripts_for_csp(tagging_client) -> None:
     assert response.status_code == 200
     assert "<script>" not in response.text
     assert '<script src="/static/theme.js"></script>' in response.text
+    assert 'id="runtime-clock"' in response.text
+    assert 'id="copy-logs"' in response.text
 
 
 def test_health_endpoint_reports_ok(tagging_client) -> None:
@@ -129,3 +150,16 @@ def test_health_endpoint_reports_ok(tagging_client) -> None:
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+
+def test_status_reports_runtime_details_when_idle(tagging_client) -> None:
+    client, _, _ = tagging_client
+
+    response = client.get("/api/status")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "is_processing": False,
+        "started_at": None,
+        "runtime_seconds": None,
+    }

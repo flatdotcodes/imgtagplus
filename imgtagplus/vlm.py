@@ -14,10 +14,35 @@ from PIL import Image
 
 log = logging.getLogger(__name__)
 
-# Pin the trusted Florence repository revision so trust_remote_code=True
-# executes a reviewed version rather than whatever happens to be latest.
-FLORENCE_REMOTE_CODE_REVISION = "5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac"
+# Pin reviewed Florence repository revisions so trust_remote_code=True does not
+# float to the latest remote state. Base and large do not currently share the
+# same commit history, so the loader must resolve revisions per model variant.
+FLORENCE_MODEL_REVISIONS = {
+    "microsoft/Florence-2-base": "5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac",
+    "microsoft/Florence-2-large": "21a599d414c4d928c9032694c424fb94458e3594",
+}
 FLORENCE_GENERATION_BEAMS = 3
+
+
+def _resolve_florence_revision(model_id: str) -> str | None:
+    """Return a pinned revision for known Florence variants.
+
+    Unknown Florence IDs are left unpinned rather than forced onto the base
+    revision, which can make processor/model files 404 as seen with `large`.
+    """
+    return FLORENCE_MODEL_REVISIONS.get(model_id)
+
+
+def _florence_pretrained_kwargs(model_id: str, cache_dir: Path) -> dict[str, object]:
+    """Build shared kwargs for Florence processor/model loading."""
+    kwargs: dict[str, object] = {
+        "trust_remote_code": True,
+        "cache_dir": str(cache_dir),
+    }
+    revision = _resolve_florence_revision(model_id)
+    if revision:
+        kwargs["revision"] = revision
+    return kwargs
 
 class FlorenceTagger:
     """Caption-first tagger backed by Microsoft Florence-2.
@@ -142,21 +167,15 @@ class FlorenceTagger:
                 log.info("Successfully loaded ONNX CPU pathway.")
             except ImportError:
                 log.warning("Optimum ONNX not available. Falling back to native PyTorch CPU inference with SDPA...")
-                self.processor = AutoProcessor.from_pretrained(
-                    self._model_id,
-                    trust_remote_code=True,
-                    revision=FLORENCE_REMOTE_CODE_REVISION,
-                    cache_dir=str(self._model_dir),
-                )
+                pretrained_kwargs = _florence_pretrained_kwargs(self._model_id, self._model_dir)
+                self.processor = AutoProcessor.from_pretrained(self._model_id, **pretrained_kwargs)
                 self.model = AutoModelForCausalLM.from_pretrained(
                     self._model_id, 
                     torch_dtype=self.dtype, 
                     attn_implementation="eager",
-                    trust_remote_code=True,
-                    revision=FLORENCE_REMOTE_CODE_REVISION,
                     low_cpu_mem_usage=False,
                     device_map=None,
-                    cache_dir=str(self._model_dir)
+                    **pretrained_kwargs,
                 )
         else:
             log.info(
@@ -164,21 +183,15 @@ class FlorenceTagger:
                 self._model_id,
                 self.device,
             )
-            self.processor = AutoProcessor.from_pretrained(
-                self._model_id,
-                trust_remote_code=True,
-                revision=FLORENCE_REMOTE_CODE_REVISION,
-                cache_dir=str(self._model_dir),
-            )
+            pretrained_kwargs = _florence_pretrained_kwargs(self._model_id, self._model_dir)
+            self.processor = AutoProcessor.from_pretrained(self._model_id, **pretrained_kwargs)
             self.model = AutoModelForCausalLM.from_pretrained(
                 self._model_id, 
                 torch_dtype=self.dtype,
                 attn_implementation="eager",
-                trust_remote_code=True,
-                revision=FLORENCE_REMOTE_CODE_REVISION,
                 low_cpu_mem_usage=False,
                 device_map=None,
-                cache_dir=str(self._model_dir)
+                **pretrained_kwargs,
             ).to(self.device)
 
         if not self.is_onnx:

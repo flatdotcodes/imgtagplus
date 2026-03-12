@@ -12,6 +12,8 @@ import logging
 import os
 import queue
 import threading
+import time
+from datetime import datetime
 from pathlib import Path
 
 import uvicorn
@@ -33,11 +35,61 @@ QUEUE_MAXSIZE = 1000
 log_queue = queue.Queue(maxsize=QUEUE_MAXSIZE)
 progress_queue = queue.Queue(maxsize=QUEUE_MAXSIZE)
 _job_lock = threading.Lock()
+_job_state_lock = threading.Lock()
+_job_started_at: datetime | None = None
+_job_started_monotonic: float | None = None
+_last_job_runtime_seconds: int | None = None
 
 
 def _is_processing() -> bool:
     """Return whether the single worker slot is currently busy."""
     return _job_lock.locked()
+
+
+def _mark_job_started() -> str:
+    """Record the start of the active job and return an ISO timestamp."""
+    started_at = datetime.now().astimezone()
+    with _job_state_lock:
+        global _job_started_at, _job_started_monotonic, _last_job_runtime_seconds
+        _job_started_at = started_at
+        _job_started_monotonic = time.monotonic()
+        _last_job_runtime_seconds = None
+    return started_at.isoformat()
+
+
+def _current_runtime_seconds() -> int | None:
+    """Return the active job runtime in whole seconds, if available."""
+    with _job_state_lock:
+        if _job_started_monotonic is None:
+            return None
+        return max(0, int(time.monotonic() - _job_started_monotonic))
+
+
+def _mark_job_finished() -> int | None:
+    """Finalize job timing state and return the total runtime in seconds."""
+    with _job_state_lock:
+        global _job_started_at, _job_started_monotonic, _last_job_runtime_seconds
+        runtime_seconds = None
+        if _job_started_monotonic is not None:
+            runtime_seconds = max(0, int(time.monotonic() - _job_started_monotonic))
+        _last_job_runtime_seconds = runtime_seconds
+        _job_started_at = None
+        _job_started_monotonic = None
+        return runtime_seconds
+
+
+def _job_status_payload() -> dict[str, object]:
+    """Return the frontend-facing snapshot of the current job state."""
+    with _job_state_lock:
+        started_at = _job_started_at.isoformat() if _job_started_at is not None else None
+        last_runtime = _last_job_runtime_seconds
+
+    runtime_seconds = _current_runtime_seconds() if _is_processing() else last_runtime
+    return {
+        "is_processing": _is_processing(),
+        "started_at": started_at,
+        "runtime_seconds": runtime_seconds,
+    }
 
 
 def _enqueue_latest(target_queue: queue.Queue, item: dict) -> None:
@@ -168,7 +220,7 @@ async def get_system():
 @app.get("/api/status")
 async def get_status():
     """Check if a tagging job is currently running."""
-    return {"is_processing": _is_processing()}
+    return _job_status_payload()
 
 
 @app.get("/health")
@@ -179,9 +231,6 @@ async def health_check():
 @app.post("/api/tag")
 async def start_tagging(request: Request):
     """Validate a tag request and launch the single background worker."""
-    if not _job_lock.acquire(blocking=False):
-        return {"error": "A tagging job is already in progress"}
-
     data = await request.json()
     input_path_raw = data.get("input")
     model_id = data.get("model_id", "clip")
@@ -203,13 +252,23 @@ async def start_tagging(request: Request):
     _assert_sandbox(input_path)
     _assert_sandbox(output_dir)
 
+    if not _job_lock.acquire(blocking=False):
+        return {"error": "A tagging job is already in progress"}
+
     _drain_queue(log_queue)
     _drain_queue(progress_queue)
+    started_at = _mark_job_started()
 
     def progress_callback(current, total, filename):
         _enqueue_latest(
             progress_queue,
-            {"type": "progress", "current": current, "total": total, "filename": filename},
+            {
+                "type": "progress",
+                "current": current,
+                "total": total,
+                "filename": filename,
+                "runtime_seconds": _current_runtime_seconds(),
+            },
         )
 
     def run_worker():
@@ -230,7 +289,13 @@ async def start_tagging(request: Request):
             )
             _enqueue_latest(
                 progress_queue,
-                {"type": "progress", "current": 0, "total": 0, "filename": "Scanning files..."},
+                {
+                    "type": "progress",
+                    "current": 0,
+                    "total": 0,
+                    "filename": "Scanning files...",
+                    "runtime_seconds": _current_runtime_seconds(),
+                },
             )
             app_run(args, progress_callback=progress_callback)
         except Exception as e:
@@ -239,13 +304,14 @@ async def start_tagging(request: Request):
                 {"type": "log", "level": "ERROR", "message": f"Worker crashed: {e}"},
             )
         finally:
+            runtime_seconds = _mark_job_finished()
             if _job_lock.locked():
                 _job_lock.release()
-            _enqueue_latest(progress_queue, {"type": "done"})
+            _enqueue_latest(progress_queue, {"type": "done", "runtime_seconds": runtime_seconds})
 
     thread = threading.Thread(target=run_worker, daemon=True)
     thread.start()
-    return {"status": "started"}
+    return {"status": "started", "started_at": started_at}
 
 @app.get("/api/stream")
 async def sse_stream():
@@ -278,7 +344,8 @@ async def sse_stream():
                             "current": prog.get('current', 0),
                             "total": prog.get('total', 0),
                             "filename": prog.get('filename', ''),
-                            "done": is_done
+                            "done": is_done,
+                            "runtime_seconds": prog.get('runtime_seconds'),
                         })
                         yield f"data: {event_data}\n\n"
                         await asyncio.sleep(0.01)

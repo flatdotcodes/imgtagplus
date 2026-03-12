@@ -150,7 +150,7 @@ If Optimum is unavailable, the code falls back to native PyTorch CPU inference w
 
 - `attn_implementation="eager"`
 - `trust_remote_code=True`
-- the pinned Florence revision
+- the model-specific pinned Florence revision when the selected variant has a reviewed pin
 
 ### GPU path
 
@@ -158,7 +158,7 @@ For `cuda` and `mps`, Florence loads the native PyTorch model and processor with
 
 - `attn_implementation="eager"`
 - `trust_remote_code=True`
-- the pinned Florence revision
+- the model-specific pinned Florence revision when the selected variant has a reviewed pin
 - `device_map=None`
 
 The model is then moved onto the selected device.
@@ -212,13 +212,14 @@ Florence currently requires `trust_remote_code=True`.
 
 That increases the importance of pinning and review, so the code includes two safeguards:
 
-1. `FLORENCE_REMOTE_CODE_REVISION` is pinned to a specific commit hash.
+1. `FLORENCE_MODEL_REVISIONS` pins reviewed commit hashes per supported Florence variant.
 2. The source comments state that the compatibility patches should be re-validated before changing that pin or upgrading the surrounding stack.
 
-Current pin:
+Current pins:
 
 ```text
-5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac
+microsoft/Florence-2-base  -> 5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac
+microsoft/Florence-2-large -> 21a599d414c4d928c9032694c424fb94458e3594
 ```
 
 ## Compatibility patches

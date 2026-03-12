@@ -9,6 +9,8 @@ from __future__ import annotations
 import argparse
 import logging
 import threading
+import time
+from datetime import datetime
 from pathlib import Path
 from typing import Callable, Optional
 
@@ -20,6 +22,14 @@ from imgtagplus.scanner import scan
 from imgtagplus.tags import TAGS
 
 log = logging.getLogger(__name__)
+
+
+def _format_runtime(seconds: float) -> str:
+    """Format an elapsed runtime as HH:MM:SS."""
+    total_seconds = max(0, int(seconds))
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, secs = divmod(remainder, 60)
+    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
 
 def _prompt_on_error(
@@ -80,6 +90,8 @@ def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int
         log_file=args.log_file,
         silent=args.silent,
     )
+    run_started_at = datetime.now().astimezone()
+    run_started_monotonic = time.monotonic()
 
     # Resolve the model ID. It might be an internal key or a full Hugging Face ID.
     model_id = getattr(args, "model_id", "clip")
@@ -107,6 +119,7 @@ def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int
     log.info("Silent      : %s", args.silent)
     log.info("Continue err: %s", args.continue_on_error)
     log.info("Log file    : %s", log_path)
+    log.info("Run started : %s", run_started_at.strftime("%Y-%m-%d %H:%M:%S"))
 
     # ── Discover images ───────────────────────────────────────────────────
     try:
@@ -214,6 +227,8 @@ def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int
 
     # ── Stop monitor & collect stats ──────────────────────────────────────
     stats = monitor.stop()
+    total_runtime = _format_runtime(time.monotonic() - run_started_monotonic)
+    log.info("Runtime     : %s", total_runtime)
 
     # ── Summary ───────────────────────────────────────────────────────────
     separator = "=" * 60
@@ -225,6 +240,7 @@ def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int
         "",
         f"Images processed : {success_count} / {len(images)}",
         f"Errors           : {error_count}",
+        f"Runtime          : {total_runtime}",
         "",
         stats.summary(),
         "",
