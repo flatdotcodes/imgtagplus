@@ -1,4 +1,19 @@
-node_modules
-sandbox
-basecoat
+node_modules/
+sandbox/
+
+# Logs
 *.log
+
+# macOS / system artifacts
+.DS_Store
+
+# Python cache and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.cache/
+
+# Local agent / assistant artifacts
+.gemini/

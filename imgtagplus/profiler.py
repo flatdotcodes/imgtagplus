@@ -1,7 +1,14 @@
+"""Hardware profiling and model recommendation helpers.
+
+These helpers stay intentionally lightweight so both the CLI and web UI can
+quickly decide which tagging backends are reasonable on the current machine.
+"""
+
+import logging
 import platform
+
 import psutil
 import torch
-import logging
 
 log = logging.getLogger(__name__)
 
@@ -34,30 +41,25 @@ AVAILABLE_MODELS = {
 }
 
 def get_system_specs() -> dict:
-    """Profiles the system to determine RAM and VRAM availability."""
-    
-    # 1. Check total system RAM
+    """Return RAM, accelerator, and coarse VRAM data used for model gating."""
+
     vm = psutil.virtual_memory()
     total_ram_gb = vm.total / (1024 ** 3)
     available_ram_gb = vm.available / (1024 ** 3)
-    
-    # 2. Check for CUDA (Nvidia GPUs)
+
     vram_gb = 0.0
     device_type = "cpu"
     if torch.cuda.is_available():
         device_type = "cuda"
-        # Rough estimate: getting total VRAM of the first CUDA device
         try:
             vram_gb = torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)
         except Exception:
             pass
-            
-    # 3. Check for Apple Silicon (MPS / Metal)
     elif platform.system() == "Darwin" and platform.machine() == "arm64":
         device_type = "mps"
-        # Unified memory means VRAM = RAM
+        # Apple Silicon uses unified memory, so VRAM headroom tracks total RAM.
         vram_gb = total_ram_gb
-        
+
     return {
         "os": platform.system(),
         "arch": platform.machine(),
@@ -68,16 +70,14 @@ def get_system_specs() -> dict:
     }
 
 def get_model_recommendations() -> list[dict]:
-    """Returns a list of models annotated with whether they are supported on this hardware."""
+    """Annotate each known model with support and memory warnings for this host."""
     specs = get_system_specs()
-    # If the system has an accelerator, we prioritize VRAM limit. 
-    # If CPU only, we fall back to checking available RAM.
     effective_memory = specs["vram_gb"] if specs["accelerator"] in ["cuda", "mps"] else specs["available_ram_gb"]
-    
+
     results = []
     for model_id, info in AVAILABLE_MODELS.items():
         supported = effective_memory >= info["min_ram_gb"]
-        
+
         warning = ""
         if not supported:
             if specs["accelerator"] == "cpu":
@@ -89,17 +89,17 @@ def get_model_recommendations() -> list[dict]:
             **info,
             "key": model_id,
             "supported": supported,
-            "warning": warning
+            "warning": warning,
         })
-        
+
     return results
 
 def get_profiler_summary() -> dict:
-    """Returns the full hardware profile and model recommendations."""
+    """Combine hardware data, model support, and a coarse UI-facing rating."""
     specs = get_system_specs()
     models = get_model_recommendations()
-    
-    # Excellent: Native Apple Silicon MPS or Dedicated Nvidia VRAM > 8GB
+
+    # The rating is intentionally simple; it is only used for UX copy.
     if specs["accelerator"] in ["cuda", "mps"] and specs["vram_gb"] > 8:
         performance_rating = "Excellent"
     elif specs["total_ram_gb"] >= 16:
@@ -110,5 +110,5 @@ def get_profiler_summary() -> dict:
     return {
         "hardware": specs,
         "models": list(models),
-        "performance_rating": performance_rating
+        "performance_rating": performance_rating,
     }

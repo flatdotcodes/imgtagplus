@@ -8,17 +8,16 @@ from __future__ import annotations
 
 import argparse
 import logging
-import select
-import sys
 import threading
 from pathlib import Path
+from typing import Callable, Optional
 
 from imgtagplus import logger as log_setup
 from imgtagplus.metadata import write_xmp
 from imgtagplus.monitor import Monitor
+from imgtagplus.profiler import AVAILABLE_MODELS
 from imgtagplus.scanner import scan
 from imgtagplus.tags import TAGS
-from imgtagplus.profiler import AVAILABLE_MODELS
 
 log = logging.getLogger(__name__)
 
@@ -72,9 +71,6 @@ def _prompt_on_error(
         return True
     except Exception:
         return True
-
-
-from typing import Callable, Optional
 
 def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int, str], None]] = None) -> int:
     """Execute the full tagging pipeline.  Returns an exit code."""
@@ -143,7 +139,11 @@ def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int
             # Use the resolved Hugging Face ID instead of the internal key
             hf_model_id = model_info["id"]
             log.info("Resolved %s to Hugging Face ID: %s", model_id, hf_model_id)
-            tagger = FlorenceTagger(model_id=hf_model_id, model_dir=args.model_dir, accelerator=getattr(args, "accelerator", None))
+            tagger = FlorenceTagger(
+                model_id=hf_model_id,
+                model_dir=args.model_dir,
+                accelerator=getattr(args, "accelerator", None),
+            )
 
     except Exception as exc:
         log.error("Failed to load AI model: %s", exc, exc_info=True)
@@ -193,6 +193,7 @@ def run(args: argparse.Namespace, progress_callback: Optional[Callable[[int, int
                 img_path,
                 tag_names,
                 output_dir=args.output_dir,
+                overwrite=getattr(args, "overwrite", False),
             )
             xmp_dirs.add(xmp_path.parent)
             success_count += 1

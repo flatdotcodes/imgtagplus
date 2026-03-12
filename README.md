@@ -17,9 +17,12 @@
 ### Install
 
 ```bash
-# Clone and install
+# Clone and install the full Florence + CLIP stack
 cd imgtagplus
 pip install -r requirements.txt
+
+# Or install a lighter CLIP-only environment
+pip install -r requirements-clip.txt
 
 # Or install as a package
 pip install .
@@ -52,6 +55,22 @@ imgtagplus --stop-server
 python -m imgtagplus -i photo.jpg
 ```
 
+### Run tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+### Frontend development
+
+```bash
+npm install
+npm run build:css
+```
+
+Run the CSS build after changing `static/input.css`.
+
 ## CLI Options
 
 | Option | Short | Default | Description |
@@ -65,9 +84,25 @@ python -m imgtagplus -i photo.jpg
 | `--max-tags` | `-n` | `20` | Max tags per image |
 | `--silent` | `-s` | `false` | Suppress interactive prompts |
 | `--continue-on-error` | `-c` | `false` | Skip errors, keep going |
+| `--overwrite` |  | `false` | Replace existing XMP tags instead of merging them |
 | `--output-dir` | `-o` | *(alongside image)* | Custom output directory for `.xmp` files |
 | `--log-file` | `-l` | `imgtagplus_TIMESTAMP.log` | Custom log file path |
 | `--model-dir` | | `~/.cache/imgtagplus` | Cache directory for model files |
+
+`clip` and `florence-2-base` are user-facing aliases. Internally, Florence resolves to the Hugging Face model ID `microsoft/Florence-2-base`.
+
+## HTTP API
+
+When the local web server is running, FastAPI serves interactive API docs at [`/docs`](http://127.0.0.1:5000/docs).
+
+The main endpoints are:
+
+- `GET /api/browse` for sandbox-aware directory browsing
+- `POST /api/tag` to start a tagging run
+- `GET /api/status` to check whether a run is active
+- `GET /api/stream` for SSE progress/log events
+- `GET /api/models` and `GET /api/system` for hardware/model metadata
+- `GET /health` for local readiness checks
 
 ## Output
 
