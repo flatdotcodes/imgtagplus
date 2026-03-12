@@ -69,7 +69,7 @@ npm install
 npm run build:css
 ```
 
-Run the CSS build after changing `static/input.css`.
+Run the CSS build after changing `imgtagplus/static/input.css`.
 
 ## CLI Options
 
@@ -87,6 +87,7 @@ Run the CSS build after changing `static/input.css`.
 | `--overwrite` |  | `false` | Replace existing XMP tags instead of merging them |
 | `--output-dir` | `-o` | *(alongside image)* | Custom output directory for `.xmp` files |
 | `--log-file` | `-l` | `imgtagplus_TIMESTAMP.log` | Custom log file path |
+| `--input-timeout` | | `30` | Seconds to wait for user input on errors before auto-skipping |
 | `--model-dir` | | `~/.cache/imgtagplus` | Cache directory for model files |
 
 `clip` and `florence-2-base` are user-facing aliases. Internally, Florence resolves to the Hugging Face model ID `microsoft/Florence-2-base`.

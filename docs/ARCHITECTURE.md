@@ -10,7 +10,7 @@ This guide explains how ImgTagPlus is structured today and how its major runtime
   - starts/stops/restarts the local web server daemon
   - runs the interactive menu when invoked with no arguments
   - dispatches headless tagging runs into the shared application pipeline
-- `server.py` — FastAPI app for the local web UI
+- `imgtagplus/server.py` — FastAPI app for the local web UI
   - serves `/`, `/static/*`, and FastAPI's generated `/docs`
   - exposes local API endpoints under `/api/*`
   - runs at most one tagging job at a time
@@ -39,8 +39,8 @@ This guide explains how ImgTagPlus is structured today and how its major runtime
 
 ### Frontend assets
 
-- `static/index.html` — local single-page UI shell
-- `static/main.js` — API calls, SSE connection management, browser-side state
+- `imgtagplus/static/index.html` — local single-page UI shell
+- `imgtagplus/static/main.js` — API calls, SSE connection management, browser-side state
 
 ## Main execution paths
 
@@ -99,9 +99,9 @@ imgtagplus --start-server
 
 Runtime path:
 
-1. `imgtagplus/cli.py` launches `server.py` as a detached subprocess and waits for `/health`.
-2. `server.py` starts FastAPI and serves the local UI.
-3. `static/main.js` loads:
+1. `imgtagplus/cli.py` launches `imgtagplus/server.py` as a detached subprocess and waits for `/health`.
+2. `imgtagplus/server.py` starts FastAPI and serves the local UI.
+3. `imgtagplus/static/main.js` loads:
    - `/api/system` for hardware and model metadata
    - `/api/status` to restore run state after refresh
 4. When the user starts a job, the browser `POST`s `/api/tag`.
@@ -151,14 +151,14 @@ input path
 
 The web server is intentionally single-tenant:
 
-- `_job_lock` in `server.py` allows only one active job at a time
+- `_job_lock` in `imgtagplus/server.py` allows only one active job at a time
 - a second `POST /api/tag` while busy returns an error payload instead of queueing work
 
 This keeps the local UI simple and avoids overlapping model loads and filesystem writes.
 
 ### Log and progress streaming
 
-`server.py` uses two in-memory queues:
+`imgtagplus/server.py` uses two in-memory queues:
 
 - `log_queue` for formatted log records
 - `progress_queue` for progress and completion events

@@ -45,6 +45,33 @@ def test_read_existing_tags_returns_empty_set_for_malformed_xml(
     assert "Could not parse existing XMP file" in caplog.text
 
 
+def test_read_existing_tags_ignores_non_subject_rdf_li(tmp_path: Path) -> None:
+    """Only dc:subject rdf:li elements should be read as tags."""
+    xmp_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<x:xmpmeta xmlns:x="adobe:ns:meta/">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <dc:subject>
+        <rdf:Bag>
+          <rdf:li>landscape</rdf:li>
+          <rdf:li>sunset</rdf:li>
+        </rdf:Bag>
+      </dc:subject>
+      <dc:creator>
+        <rdf:Bag>
+          <rdf:li>John Doe</rdf:li>
+        </rdf:Bag>
+      </dc:creator>
+    </rdf:Description>
+  </rdf:RDF>
+</x:xmpmeta>'''
+    xmp_path = tmp_path / "test.xmp"
+    xmp_path.write_text(xmp_content)
+    tags = _read_existing_tags(xmp_path)
+    assert tags == {"landscape", "sunset"}
+    assert "John Doe" not in tags
+
+
 def test_build_xmp_includes_all_tags_and_packet_markers() -> None:
     xml = _build_xmp(["alpha", "beta"], "image.jpg")
 

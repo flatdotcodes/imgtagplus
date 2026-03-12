@@ -23,6 +23,6 @@ def test_florence_pretrained_kwargs_include_revision_when_available() -> None:
 def test_florence_pretrained_kwargs_skip_revision_for_unknown_models() -> None:
     kwargs = _florence_pretrained_kwargs("custom/florence-experiment", Path("/tmp/cache"))
 
-    assert kwargs["trust_remote_code"] is True
+    assert "trust_remote_code" not in kwargs
     assert kwargs["cache_dir"] == "/tmp/cache"
     assert "revision" not in kwargs

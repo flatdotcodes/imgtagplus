@@ -23,6 +23,11 @@ FLORENCE_MODEL_REVISIONS = {
 }
 FLORENCE_GENERATION_BEAMS = 3
 
+ONNX_MODEL_REVISIONS: dict[str, str] = {
+    "onnx-community/Florence-2-base-ft": "refs/pr/1",
+    "onnx-community/Florence-2-large-ft": "refs/pr/1",
+}
+
 
 def _resolve_florence_revision(model_id: str) -> str | None:
     """Return a pinned revision for known Florence variants.
@@ -36,12 +41,21 @@ def _resolve_florence_revision(model_id: str) -> str | None:
 def _florence_pretrained_kwargs(model_id: str, cache_dir: Path) -> dict[str, object]:
     """Build shared kwargs for Florence processor/model loading."""
     kwargs: dict[str, object] = {
-        "trust_remote_code": True,
         "cache_dir": str(cache_dir),
     }
+    # SECURITY: trust_remote_code executes Python from the HF model repo.
+    # We only enable it for known model IDs with pinned revisions.
     revision = _resolve_florence_revision(model_id)
-    if revision:
-        kwargs["revision"] = revision
+    if model_id in FLORENCE_MODEL_REVISIONS:
+        kwargs["trust_remote_code"] = True
+        if revision:
+            kwargs["revision"] = revision
+    else:
+        log.warning(
+            "Model %s is not in the known Florence model list — "
+            "trust_remote_code will NOT be enabled.",
+            model_id,
+        )
     return kwargs
 
 class FlorenceTagger:
@@ -80,7 +94,6 @@ class FlorenceTagger:
         os.environ["HF_HOME"] = str(self._model_dir)
 
         import torch
-        from transformers import AutoModelForCausalLM, AutoProcessor
 
         # ── Compatibility shim for Florence-2 on transformers 4.44.x ─────────
         # Florence-2's remote code currently assumes several attributes exist
@@ -91,47 +104,56 @@ class FlorenceTagger:
         # `FLORENCE_REMOTE_CODE_REVISION` above. If Florence-2 or transformers
         # is upgraded, this block should be re-validated before the pin or the
         # patches are changed.
-        
-        # 1. Patch TokenizersBackend for processor initialization
-        try:
-            from transformers.tokenization_utils_tokenizers import TokenizersBackend
-            if not hasattr(TokenizersBackend, "additional_special_tokens"):
-                TokenizersBackend.additional_special_tokens = property(
-                    lambda self: getattr(self, "_additional_special_tokens", [])
-                )
-                log.debug("Patched TokenizersBackend.additional_special_tokens")
-        except ImportError:
-            pass
-
-        # 2. Patch PretrainedConfig for model config initialization
-        from transformers.configuration_utils import PretrainedConfig
-        _orig_config_getattribute = PretrainedConfig.__getattribute__
-
-        def _patched_config_getattribute(self, item):
+        import transformers
+        from transformers import AutoModelForCausalLM, AutoProcessor
+        _tf_version = tuple(int(x) for x in transformers.__version__.split(".")[:2])
+        if _tf_version >= (4, 44) and _tf_version < (5, 0):
+            # 1. Patch TokenizersBackend for processor initialization
             try:
-                return _orig_config_getattribute(self, item)
-            except AttributeError:
-                if item == "forced_bos_token_id":
-                    return None
-                raise
-        PretrainedConfig.__getattribute__ = _patched_config_getattribute
+                from transformers.tokenization_utils_tokenizers import TokenizersBackend
+                if not hasattr(TokenizersBackend, "additional_special_tokens"):
+                    TokenizersBackend.additional_special_tokens = property(
+                        lambda self: getattr(self, "_additional_special_tokens", [])
+                    )
+                    log.debug("Patched TokenizersBackend.additional_special_tokens")
+            except ImportError:
+                pass
 
-        # 3. Patch PreTrainedModel for model instance initialization
-        # Florence-2's @property '_supports_sdpa' / '_supports_flash_attn_2' 
-        # fail during __init__ because they access self.language_model before it exists.
-        from transformers.modeling_utils import PreTrainedModel
-        _orig_model_getattribute = PreTrainedModel.__getattribute__
+            # 2. Patch PretrainedConfig for model config initialization
+            from transformers.configuration_utils import PretrainedConfig
+            _orig_config_getattribute = PretrainedConfig.__getattribute__
 
-        def _patched_model_getattribute(self, item):
-            try:
-                return _orig_model_getattribute(self, item)
-            except AttributeError:
-                # If these specific properties fail, it's usually because language_model is missing
-                if item in ("_supports_sdpa", "_supports_flash_attn_2"):
-                    return False
-                raise
-        PreTrainedModel.__getattribute__ = _patched_model_getattribute
-        log.debug("Applied full Florence-2 compatibility triple-patch (Tokenizer/Config/Model).")
+            def _patched_config_getattribute(self, item):
+                try:
+                    return _orig_config_getattribute(self, item)
+                except AttributeError:
+                    if item == "forced_bos_token_id":
+                        return None
+                    raise
+            PretrainedConfig.__getattribute__ = _patched_config_getattribute
+
+            # 3. Patch PreTrainedModel for model instance initialization
+            # Florence-2's @property '_supports_sdpa' / '_supports_flash_attn_2' 
+            # fail during __init__ because they access self.language_model before it exists.
+            from transformers.modeling_utils import PreTrainedModel
+            _orig_model_getattribute = PreTrainedModel.__getattribute__
+
+            def _patched_model_getattribute(self, item):
+                try:
+                    return _orig_model_getattribute(self, item)
+                except AttributeError:
+                    # If these specific properties fail, it's usually because language_model is missing
+                    if item in ("_supports_sdpa", "_supports_flash_attn_2"):
+                        return False
+                    raise
+            PreTrainedModel.__getattribute__ = _patched_model_getattribute
+            log.debug("Applied full Florence-2 compatibility triple-patch (Tokenizer/Config/Model).")
+        else:
+            log.warning(
+                "Untested transformers version %s — Florence-2 compatibility patches skipped. "
+                "If model loading fails, try transformers>=4.44.2,<5.0.0.",
+                transformers.__version__,
+            )
 
         # Decide on the device and precision
         self.device = "cpu"
@@ -154,10 +176,14 @@ class FlorenceTagger:
             try:
                 from optimum.onnxruntime import ORTModelForConditionalGeneration
                 onnx_model_id = f"onnx-community/{self._model_id.split('/')[-1]}-ft"
+                # SECURITY: trust_remote_code executes Python from the HF model repo.
+                # We only enable it for known model IDs with pinned revisions.
+                onnx_revision = ONNX_MODEL_REVISIONS.get(onnx_model_id)
                 self.processor = AutoProcessor.from_pretrained(
                     onnx_model_id,
                     trust_remote_code=True,
                     cache_dir=str(self._model_dir),
+                    **({"revision": onnx_revision} if onnx_revision else {}),
                 )
                 self.model = ORTModelForConditionalGeneration.from_pretrained(
                     onnx_model_id,
@@ -286,6 +312,19 @@ class FlorenceTagger:
             if kw not in seen:
                 seen.add(kw)
                 unique_keywords.append(kw)
+
+        # Preserve adjacent word pairs as compound tags when both words
+        # survived filtering individually.
+        keyword_set = set(unique_keywords)
+        words_in_caption = caption.lower().split()
+        for i in range(len(words_in_caption) - 1):
+            w1 = words_in_caption[i].strip(".,;:!?\"'()[]")
+            w2 = words_in_caption[i + 1].strip(".,;:!?\"'()[]")
+            if w1 in keyword_set and w2 in keyword_set:
+                compound = f"{w1} {w2}"
+                if compound not in keyword_set:
+                    unique_keywords.append(compound)
+                    keyword_set.add(compound)
 
         return unique_keywords
 

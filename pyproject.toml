@@ -7,7 +7,7 @@ name = "imgtagplus"
 version = "1.0.0"
 description = "Bulk AI image tagger using CLIP (ONNX) — writes XMP sidecar files for DAM compatibility"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [{name = "ImgTagPlus Contributors"}]
 keywords = ["image", "tagging", "AI", "CLIP", "XMP", "DAM", "ONNX"]
@@ -40,6 +40,9 @@ imgtagplus = "imgtagplus.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.package-data]
+imgtagplus = ["static/**/*"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"

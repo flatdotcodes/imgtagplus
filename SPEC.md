@@ -22,7 +22,9 @@ ImgTagPlus is a local-first image-tagging tool that scans images on disk, runs a
 
 - `clip` performs zero-shot tagging against the built-in tag vocabulary.
 - `florence-2-base` performs caption-driven keyword extraction.
+- `florence-2-large` performs the same caption-driven extraction with a larger model.
 - `threshold` applies to CLIP-style scoring and is clamped to the inclusive range `0.0..1.0`.
+- Florence backends ignore the `threshold` parameter; all extracted keywords are returned.
 - `max_tags` is clamped to the inclusive range `1..200`.
 
 ## XMP behavior

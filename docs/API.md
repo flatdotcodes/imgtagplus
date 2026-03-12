@@ -1,13 +1,13 @@
 # API
 
-This document describes the local HTTP surface exposed by `server.py`. The API is intended for the bundled local web UI, not for a multi-user remote service.
+This document describes the local HTTP surface exposed by `imgtagplus/server.py`. The API is intended for the bundled local web UI, not for a multi-user remote service.
 
 When the server is running, FastAPI also exposes generated OpenAPI docs at `/docs`.
 
 ## Base assumptions
 
 - default bind address: `127.0.0.1:5000`
-- server process: local FastAPI app in `server.py`
+- server process: local FastAPI app in `imgtagplus/server.py`
 - concurrency model: one active tagging job at a time
 - response format: JSON for API routes unless noted otherwise
 
@@ -150,21 +150,23 @@ Success response shape:
 }
 ```
 
-Error payloads are returned as JSON, for example:
+Error responses use standard HTTP status codes:
+
+- `404` — Directory does not exist
+- `403` — Path outside sandbox or permission denied
+- `429` — Rate limit exceeded
 
 ```json
-{"error": "Directory does not exist"}
+{"detail": "Directory does not exist"}
 ```
 
-or
-
 ```json
-{"error": "Access denied: Path is outside the sandbox"}
+{"detail": "Access denied: Path is outside the sandbox"}
 ```
 
 Notes:
 
-- this route does not raise HTTP 403 for out-of-sandbox browsing; it returns a JSON error payload
+- error detail is in the `detail` field (standard FastAPI HTTPException format)
 - the browser cannot inspect local folders directly, so the frontend proxies navigation through this endpoint
 
 ## `POST /api/tag`
@@ -203,21 +205,26 @@ Successful response:
 {"status": "started"}
 ```
 
-Possible error responses:
+Possible error responses (standard HTTP status codes):
+
+- `409` — A tagging job is already in progress
+- `400` — Invalid or missing input path
+- `403` — Sandbox violation
+- `429` — Rate limit exceeded
 
 ```json
-{"error": "A tagging job is already in progress"}
+{"detail": "A tagging job is already in progress"}
 ```
 
 ```json
-{"error": "Invalid or non-existent path: None"}
+{"detail": "Invalid or non-existent path"}
 ```
 
 ```json
-{"error": "Invalid or non-existent path: /bad/path"}
+{"detail": "Invalid or non-existent path: /bad/path"}
 ```
 
-Sandbox violations are different: `_assert_sandbox()` raises `HTTPException`, so the route returns HTTP 403 with:
+Sandbox violations return HTTP 403:
 
 ```json
 {"detail": "Access denied: path outside sandbox"}

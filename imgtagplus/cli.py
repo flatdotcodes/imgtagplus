@@ -68,9 +68,9 @@ def start_server_daemon(ffsa: bool = False, sandbox_dir: str | None = None) -> N
         
     print("Starting ImgTagPlus Web UI...")
     
-    # We run the uvicorn server via our server.py entrypoint
+    # We run the uvicorn server via our server module entrypoint
     # For a robust daemon, we use subprocess.Popen
-    server_script = Path(__file__).parent.parent / "server.py"
+    server_script = Path(__file__).parent / "server.py"
     
     # Ensure .imgtagplus directory exists
     PID_FILE.parent.mkdir(parents=True, exist_ok=True)

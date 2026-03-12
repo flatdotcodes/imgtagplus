@@ -113,11 +113,17 @@ def _read_existing_tags(xmp_path: Path) -> set[str]:
         tree = ET.parse(xmp_path)
         root = tree.getroot()
         tags: set[str] = set()
-        # Walk all rdf:li elements inside dc:subject.
-        for li in root.iter("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}li"):
-            text = (li.text or "").strip()
-            if text:
-                tags.add(text)
+        ns = {
+            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            "dc": "http://purl.org/dc/elements/1.1/",
+        }
+        # Navigate specifically to dc:subject > rdf:Bag > rdf:li
+        for subject in root.iter(f"{{{ns['dc']}}}subject"):
+            for bag in subject.iter(f"{{{ns['rdf']}}}Bag"):
+                for li in bag.iter(f"{{{ns['rdf']}}}li"):
+                    text = (li.text or "").strip()
+                    if text:
+                        tags.add(text)
         return tags
     except ET.ParseError:
         log.warning("Could not parse existing XMP file: %s", xmp_path)

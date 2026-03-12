@@ -157,7 +157,7 @@ TAGS: list[str] = [
     "spirituality", "religion", "faith",
     "luxury", "elegance", "rustic", "industrial", "modern",
     "cozy", "warm", "cold", "wet", "dry", "dusty", "clean",
-    "old", "new", "ancient", "contemporary", "futuristic",
+    "old", "new", "ancient", "contemporary",
     "large", "small", "tiny", "huge", "tall", "short",
     "crowded", "empty", "busy", "quiet", "noisy",
     "dangerous", "safe", "mysterious", "magical", "dreamy",

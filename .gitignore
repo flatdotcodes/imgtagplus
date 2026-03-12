@@ -5,6 +5,9 @@ basecoat/
 # Logs
 *.log
 
+# Environment files
+.env*
+
 # macOS / system artifacts
 .DS_Store
 

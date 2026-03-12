@@ -16,7 +16,7 @@ imgtagplus --restart-server
 
 Behavior:
 
-- the CLI launches `server.py` as a detached subprocess
+- the CLI launches `imgtagplus/server.py` as a detached subprocess
 - a PID file is stored in the system temp directory and is namespaced by user ID where available
 - startup is not reported as successful until `http://127.0.0.1:5000/health` answers with HTTP 200
 - stop logic validates that the stored PID still looks like an ImgTagPlus server before signaling it
