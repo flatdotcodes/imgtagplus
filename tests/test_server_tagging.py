@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-import server
+import imgtagplus.server as server
 
 
 class _ImmediateThread:
@@ -62,8 +62,8 @@ def test_start_tagging_invalid_path_does_not_leave_server_busy(tagging_client, t
 
     response = client.post("/api/tag", json={"input": str(missing_path)})
 
-    assert response.status_code == 200
-    assert response.json() == {"error": f"Invalid or non-existent path: {missing_path}"}
+    assert response.status_code == 400
+    assert response.json() == {"detail": f"Invalid or non-existent path: {missing_path}"}
     assert client.get("/api/status").json()["is_processing"] is False
 
 

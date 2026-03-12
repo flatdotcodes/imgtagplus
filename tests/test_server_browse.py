@@ -3,8 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from fastapi import HTTPException
 
-import server
+import imgtagplus.server as server
 
 
 @pytest.mark.asyncio
@@ -18,10 +19,13 @@ async def test_browse_directory_rejects_path_outside_sandbox(
 
     monkeypatch.setattr(server, "FFSA_ENABLED", False)
     monkeypatch.setattr(server, "SANDBOX_ROOT", sandbox_root)
+    monkeypatch.setattr(server, "_check_rate_limit", lambda *a: True)
 
-    result = await server.browse_directory(str(outside_dir))
+    with pytest.raises(HTTPException) as exc_info:
+        await server.browse_directory(request=None, path=str(outside_dir))
 
-    assert result == {"error": "Access denied: Path is outside the sandbox"}
+    assert exc_info.value.status_code == 403
+    assert exc_info.value.detail == "Access denied: Path is outside the sandbox"
 
 
 @pytest.mark.asyncio
@@ -38,8 +42,9 @@ async def test_browse_directory_lists_child_directories_in_sandbox(
 
     monkeypatch.setattr(server, "FFSA_ENABLED", False)
     monkeypatch.setattr(server, "SANDBOX_ROOT", sandbox_root)
+    monkeypatch.setattr(server, "_check_rate_limit", lambda *a: True)
 
-    result = await server.browse_directory(str(sandbox_root))
+    result = await server.browse_directory(request=None, path=str(sandbox_root))
 
     assert result["current_path"] == str(sandbox_root)
     assert result["sandbox"] is True
