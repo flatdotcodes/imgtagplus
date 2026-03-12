@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImgTagPlus</title>
+    <script>
+        // Theme: apply before CSS loads to prevent flash
+        (() => {
+            try {
+                const stored = localStorage.getItem('themeMode');
+                if (stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch (_) { }
+            document.addEventListener('basecoat:theme', (e) => {
+                const mode = e.detail?.mode || (document.documentElement.classList.contains('dark') ? 'light' : 'dark');
+                if (mode === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                localStorage.setItem('themeMode', mode);
+            });
+        })();
+    </script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
+
+    <header
+        class="border-b bg-background/80 backdrop-blur-md sticky top-0 z-10 w-full px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="text-primary">
+                <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+                <path d="M7 7h.01" />
+            </svg>
+            <h1 class="text-xl font-bold tracking-tight">ImgTagPlus</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <span id="status-badge" class="badge-secondary flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-zinc-500" id="status-dot"></span>
+                <span id="status-text">Idle</span>
+            </span>
+            <button id="help-btn" class="btn-sm-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <path d="M12 17h.01" />
+                </svg>
+                Help
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+
+        <!-- Left Column: Settings -->
+        <div class="col-span-1 lg:col-span-4 flex flex-col gap-6">
+
+            <!-- Job Configuration Card -->
+            <div class="card animate-fade-in-up" style="animation-delay: 0.1s;">
+                <header>
+                    <h2 class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        Job Configuration
+                    </h2>
+                </header>
+                <section class="space-y-5">
+                    <!-- Source Path -->
+                    <div class="grid gap-2">
+                        <label for="input-path" class="label">Source Folder Path</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="input-path" class="input flex-1" placeholder="/path/to/photos">
+                            <button id="browse-btn" class="btn-secondary" type="button">Browse</button>
+                        </div>
+                        <p class="text-sm text-muted-foreground">Absolute path to the folder to tag.</p>
+                    </div>
+
+                    <!-- Output Location -->
+                    <div class="grid gap-2">
+                        <div class="flex items-center justify-between">
+                            <label for="show-output-dir" class="label">Use separate destination folder</label>
+                            <input type="checkbox" id="show-output-dir" role="switch" class="input">
+                        </div>
+                        <p class="text-xs text-muted-foreground leading-snug">Default behavior saves metadata alongside
+                            source
+                            files.</p>
+                        <div id="output-dir-fields" class="grid gap-2 hidden">
+                            <div class="flex gap-2">
+                                <input type="text" id="output-dir" class="input flex-1" placeholder="/path/to/output">
+                                <button id="output-browse-btn" class="btn-secondary" type="button">Browse</button>
+                            </div>
+                            <p class="text-xs text-muted-foreground">XMP sidecar files will be written here instead
+                                of alongside source images.</p>
+                        </div>
+                    </div>
+
+                    <!-- Model Select -->
+                    <div class="grid gap-2">
+                        <label for="model-select" class="label">Model</label>
+                        <select id="model-select" class="select w-full">
+                            <option value="">Loading models...</option>
+                        </select>
+                        <p id="model-warning" class="text-sm text-destructive hidden"></p>
+                    </div>
+
+                    <!-- Confidence Threshold -->
+                    <div class="grid gap-3">
+                        <div class="flex justify-between items-center">
+                            <label for="threshold" class="label">Confidence Threshold</label>
+                            <span id="threshold-val" class="font-mono text-xs text-muted-foreground">0.25</span>
+                        </div>
+                        <input type="range" id="threshold" min="0.05" max="0.95" step="0.05" value="0.25"
+                            class="input w-full">
+                        <div class="flex justify-between text-xs text-muted-foreground">
+                            <span>0.05 (Lenient)</span>
+                            <span>0.95 (Strict)</span>
+                        </div>
+                        <p class="text-xs text-muted-foreground leading-snug">Determines how certain the model must be
+                            to add a tag (CLIP only).</p>
+                    </div>
+
+                    <!-- Max Tags -->
+                    <div class="grid gap-3">
+                        <div class="flex justify-between items-center">
+                            <label for="max-tags" class="label">Max Tags</label>
+                            <span id="max-tags-val" class="font-mono text-xs text-muted-foreground">20</span>
+                        </div>
+                        <input type="range" id="max-tags" min="1" max="50" step="1" value="20" class="input w-full">
+                        <div class="flex justify-between text-xs text-muted-foreground">
+                            <span>1</span>
+                            <span>50</span>
+                        </div>
+                    </div>
+
+                    <!-- Recursive toggle -->
+                    <div class="flex items-center justify-between">
+                        <label for="recursive" class="label">Scan subdirectories recursively</label>
+                        <input type="checkbox" id="recursive" role="switch" class="input" checked>
+                    </div>
+
+                </section>
+                <footer>
+                    <button id="start-btn" class="btn w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        Start Tagging
+                    </button>
+                </footer>
+                <p id="error-msg" class="text-sm text-destructive hidden text-center px-6 -mt-4"></p>
+            </div>
+
+            <!-- System Profile Card -->
+            <div id="hardware-panel" class="card animate-fade-in-up opacity-0" style="animation-delay: 0.2s;">
+                <header>
+                    <h2 class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-primary">
+                            <path
+                                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        System Profile
+                    </h2>
+                </header>
+                <section class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-muted/50 p-3 rounded-md">
+                        <span class="text-muted-foreground block mb-1">RAM</span>
+                        <span class="font-mono font-medium" id="ram-spec">--</span>
+                    </div>
+                    <div class="bg-muted/50 p-3 rounded-md cursor-pointer hover:bg-muted transition-colors"
+                        id="accel-box">
+                        <span class="text-muted-foreground block mb-1">Accelerator ⓘ</span>
+                        <span class="font-mono font-medium text-primary" id="accel-spec">--</span>
+                    </div>
+                    <div class="col-span-2 bg-muted/50 p-3 rounded-md flex justify-between items-center cursor-pointer hover:bg-muted transition-colors"
+                        id="perf-box">
+                        <span class="text-muted-foreground">Performance Rating</span>
+                        <span id="perf-rating" class="badge text-[10px] font-bold">--</span>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Progress + Terminal -->
+        <div class="col-span-1 lg:col-span-8 flex flex-col gap-6 animate-fade-in-up" style="animation-delay: 0.3s;">
+
+            <!-- Progress Card -->
+            <div class="card">
+                <header>
+                    <h2 id="progress-title">Ready</h2>
+                    <p id="progress-file" class="font-mono truncate">Waiting to start...</p>
+                </header>
+                <section>
+                    <div class="flex justify-end mb-2">
+                        <div class="text-right">
+                            <span class="text-2xl font-bold font-mono tracking-tight" id="progress-pct">0%</span>
+                            <p class="text-xs text-muted-foreground" id="progress-counts">0 / 0 images</p>
+                        </div>
+                    </div>
+                    <div class="bg-primary/20 relative h-2.5 w-full overflow-hidden rounded-full">
+                        <div id="progress-bar"
+                            class="bg-primary h-full w-0 rounded-full transition-all duration-300 ease-out relative">
+                            <div
+                                class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite]">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Terminal Card -->
+            <div class="card flex-1 bg-muted dark:!bg-zinc-950 dark:!text-zinc-300 overflow-hidden">
+                <div
+                    class="flex items-center justify-between px-6 -mt-2 pb-4 border-b border-border dark:border-zinc-800">
+                    <div class="flex items-center gap-2">
+                        <div class="flex gap-1.5">
+                            <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                        </div>
+                        <span class="text-xs font-mono ml-2 text-zinc-600 dark:text-zinc-400">server_logs ~</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="download-log"
+                            class="text-xs text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors cursor-pointer flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Download log
+                        </button>
+                        <button id="clear-logs"
+                            class="text-xs text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors cursor-pointer flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                            </svg>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+                <section id="log-container"
+                    class="flex-1 font-mono text-sm overflow-y-auto space-y-1 relative min-h-[200px]">
+                    <div class="text-zinc-600 dark:text-zinc-400 select-none">System standing by. Waiting for job...
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Help Dialog -->
+    <dialog id="help-dialog" class="dialog" aria-labelledby="help-title" aria-describedby="help-desc">
+        <article>
+            <header>
+                <h2 id="help-title">How to use ImgTagPlus</h2>
+                <p id="help-desc">A quick guide to tagging your images</p>
+            </header>
+            <section class="overflow-y-auto space-y-4 text-sm max-h-[60vh]">
+                <p>Welcome to <strong>ImgTagPlus</strong>. It uses locally run models to automatically assign tags to
+                    your images without requiring internet access.</p>
+
+                <h3 class="font-bold text-base mt-6 border-b pb-1">1. Directory Path</h3>
+                <p>Provide an absolute path to the directory containing your images. E.g.,
+                    <code>/Users/name/Pictures/Vacation</code>. ImgTagPlus will automatically skip files it cannot
+                    process and will look for standard image types.
+                </p>
+
+                <h3 class="font-bold text-base mt-6 border-b pb-1">2. Models</h3>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>CLIP (Zero-Shot)</strong>: The default, lightning-fast model. It compares images to a
+                        list of over 600 hardcoded tags and selects the best matches. Uses minimal RAM.</li>
+                    <li><strong>Florence-2</strong>: A rich Small Vision Language Model. It doesn't pick from a list; it
+                        actually "looks" at the picture and writes a detailed caption, then extracts tags from that
+                        caption. Excellent for identifying rare objects, text, and scene context. Requires a slightly
+                        more powerful machine.</li>
+                </ul>
+
+                <h3 class="font-bold text-base mt-6 border-b pb-1">3. Tags &amp; Thresholds</h3>
+                <p><strong>Max Tags</strong> controls the maximum amount of keywords added to the XMP sidecar file.</p>
+                <p><strong>Confidence Threshold</strong> (Applies to CLIP only): The lower the number, the more lenient
+                    the model will be with its guesses. A threshold of 0.25 is recommended.</p>
+
+                <h3 class="font-bold text-base mt-6 border-b pb-1">4. XMP Files</h3>
+                <p>ImgTagPlus is non-destructive. It writes <code>.xmp</code> sidecar files directly next to your
+                    original images. Open these in apps like Lightroom, Bridge, digiKam, or Darktable to see your
+                    embedded keywords instantly.</p>
+            </section>
+            <footer class="flex items-center justify-between">
+                <label class="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                    <input type="checkbox" id="dark-mode-toggle" role="switch" class="input">
+                    <span id="dark-mode-label">Dark mode <span class="font-medium">enabled</span></span>
+                </label>
+                <button onclick="this.closest('dialog').close()" class="btn">Got it</button>
+            </footer>
+            <button onclick="this.closest('dialog').close()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </article>
+    </dialog>
+
+    <!-- Performance Rating Dialog -->
+    <dialog id="perf-dialog" class="dialog" aria-labelledby="perf-title" aria-describedby="perf-desc">
+        <article>
+            <header>
+                <h2 id="perf-title">System Performance Ratings</h2>
+                <p id="perf-desc">Estimated speed per model based on your hardware</p>
+            </header>
+            <section class="space-y-4 text-sm overflow-y-auto max-h-[60vh]" autofocus tabindex="-1">
+                <div class="space-y-4">
+                    <div class="flex flex-col gap-2 p-3 rounded-md bg-muted/30">
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="badge text-xs bg-green-500/10 text-green-700 border-green-500/20 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30 w-20 justify-center">Excellent</span>
+                            <span class="font-semibold">GPU Native</span>
+                            <span class="text-xs text-muted-foreground ml-auto">(MPS or VRAM &gt; 8GB)</span>
+                        </div>
+                        <ul class="text-xs text-muted-foreground list-disc pl-5 mt-1 space-y-1">
+                            <li><strong class="text-foreground">CLIP:</strong> ~0.1s per image</li>
+                            <li><strong class="text-foreground">Florence-2 Base:</strong> ~0.5s - 1s per image</li>
+                            <li><strong class="text-foreground">Florence-2 Large:</strong> ~1s - 2s per image</li>
+                        </ul>
+                    </div>
+                    <div class="flex flex-col gap-2 p-3 rounded-md bg-muted/30">
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="badge text-xs bg-yellow-500/10 text-yellow-700 border-yellow-500/20 dark:bg-yellow-500/20 dark:text-yellow-400 dark:border-yellow-500/30 w-20 justify-center">Good</span>
+                            <span class="font-semibold">Optimized CPU</span>
+                            <span class="text-xs text-muted-foreground ml-auto">(RAM &gt; 16GB)</span>
+                        </div>
+                        <ul class="text-xs text-muted-foreground list-disc pl-5 mt-1 space-y-1">
+                            <li><strong class="text-foreground">CLIP:</strong> ~1s per image</li>
+                            <li><strong class="text-foreground">Florence-2 Base:</strong> ~2s - 4s per image</li>
+                            <li><strong class="text-foreground">Florence-2 Large:</strong> ~5s - 8s per image</li>
+                        </ul>
+                    </div>
+                    <div class="flex flex-col gap-2 p-3 rounded-md bg-muted/30">
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="badge text-xs bg-orange-500/10 text-orange-700 border-orange-500/20 dark:bg-orange-500/20 dark:text-orange-400 dark:border-orange-500/30 w-20 justify-center">Poor</span>
+                            <span class="font-semibold">Heavy CPU</span>
+                            <span class="text-xs text-muted-foreground ml-auto">(Low RAM)</span>
+                        </div>
+                        <ul class="text-xs text-muted-foreground list-disc pl-5 mt-1 space-y-1">
+                            <li><strong class="text-foreground">CLIP:</strong> ~3s per image</li>
+                            <li><strong class="text-foreground">Florence-2 Base:</strong> ~10s - 15s+ per image</li>
+                            <li><strong class="text-foreground">Florence-2 Large:</strong> Not recommended</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <button onclick="this.closest('dialog').close()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </article>
+    </dialog>
+
+    <!-- Accelerator Info Dialog -->
+    <dialog id="accel-dialog" class="dialog" aria-labelledby="accel-title" aria-describedby="accel-desc">
+        <article>
+            <header>
+                <h2 id="accel-title">System Accelerator</h2>
+                <p id="accel-desc">How ImgTagPlus uses your hardware</p>
+            </header>
+            <section class="space-y-3 text-sm" autofocus tabindex="-1">
+                <p>The <strong>Accelerator</strong> tells ImgTagPlus what hardware to use for computing the models.</p>
+                <ul class="list-disc pl-5 space-y-3 text-muted-foreground mt-2">
+                    <li><strong class="text-foreground">cuda:</strong> Dedicated Nvidia GPUs with VRAM. Extremely fast
+                        tagging.</li>
+                    <li><strong class="text-foreground">mps:</strong> Apple Silicon (M1/M2/M3). Uses unified memory.
+                        Extremely fast.</li>
+                    <li><strong class="text-foreground">cpu:</strong> The central processor. No dedicated hardware was
+                        found. Tagging will be significantly slower.</li>
+                </ul>
+            </section>
+            <footer class="flex flex-col gap-4">
+                <div class="flex items-center justify-between w-full">
+                    <label class="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                        <input type="checkbox" id="manual-accelerator" role="switch" class="input">
+                        <span id="manual-accel-label">Manual accelerator selection <b id="manual-accel-status" class="font-semibold text-foreground">disabled</b></span>
+                    </label>
+                    <button onclick="this.closest('dialog').close()" class="btn">Got it</button>
+                </div>
+                <div id="accelerator-options" class="flex gap-4 hidden ml-8">
+                    <div class="flex items-center gap-1.5">
+                        <label id="label-accel-cuda" class="flex items-center gap-2 text-sm text-muted-foreground">
+                            <input type="radio" name="accel-choice" value="cuda" id="accel-cuda" class="input" disabled> CUDA
+                        </label>
+                        <span id="tip-cuda" class="hidden text-xs cursor-help opacity-50 hover:opacity-100 transition-opacity" data-tooltip="Requires an NVIDIA GPU with CUDA support." data-side="top">ⓘ</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <label id="label-accel-mps" class="flex items-center gap-2 text-sm text-muted-foreground">
+                            <input type="radio" name="accel-choice" value="mps" id="accel-mps" class="input" disabled> MPS
+                        </label>
+                        <span id="tip-mps" class="hidden text-xs cursor-help opacity-50 hover:opacity-100 transition-opacity" data-tooltip="Requires Apple Silicon (M1/M2/M3) hardware." data-side="top">ⓘ</span>
+                    </div>
+                    <label id="label-accel-cpu" class="flex items-center gap-2 text-sm text-foreground">
+                        <input type="radio" name="accel-choice" value="cpu" id="accel-cpu" class="input" disabled> CPU
+                    </label>
+                </div>
+            </footer>
+            <button onclick="this.closest('dialog').close()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </article>
+    </dialog>
+
+    <!-- File Picker Dialog -->
+    <dialog id="file-picker-dialog" class="dialog" aria-labelledby="picker-title">
+        <article class="!max-h-[70vh]">
+            <header>
+                <h2 id="picker-title" class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-primary">
+                        <path
+                            d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
+                    </svg>
+                    Select Directory
+                </h2>
+            </header>
+            <section class="flex flex-col gap-3 flex-1 overflow-hidden -mx-6 px-6">
+                <div class="flex items-center gap-2 text-xs text-amber-500 bg-amber-500/10 px-3 py-1.5 rounded-md border border-amber-500/20 hidden"
+                    id="sandbox-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <path d="M12 9v4" />
+                        <path d="M12 17h.01" />
+                    </svg>
+                    Sandbox Mode: Access is restricted to the workspace sandbox directory.
+                </div>
+                <div
+                    class="flex items-center gap-2 bg-muted/50 p-2 rounded-md text-sm overflow-x-auto whitespace-nowrap">
+                    <span class="text-muted-foreground font-medium min-w-max">Current:</span>
+                    <span id="current-dir-path" class="text-foreground min-w-max select-all font-mono">/</span>
+                </div>
+                <div class="flex-1 overflow-y-auto space-y-1 min-h-[200px]" id="dir-list">
+                    <div class="p-4 text-center text-sm text-muted-foreground">Loading...</div>
+                </div>
+            </section>
+            <footer>
+                <button id="cancel-file-picker" class="btn-outline" type="button">Cancel</button>
+                <button id="select-dir-btn" class="btn" type="button">Select Current Directory</button>
+            </footer>
+            <button onclick="this.closest('dialog').close()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </article>
+    </dialog>
+
+    <!-- Scripts -->
+    <script src="/static/basecoat.js"></script>
+    <script src="/static/main.js"></script>
+</body>
+
+</html>
