@@ -27,9 +27,10 @@ dependencies = [
     "psutil>=5.9.0",
     "huggingface-hub>=0.20.0",
     "fastapi>=0.109.0",
+    "optimum[onnxruntime]>=0.109.0",
     "uvicorn>=0.27.0",
     "torch>=2.1.0",
-    "transformers==4.44.2",
+    "transformers>=4.44.2,<5.0.0",
     "einops>=0.7.0",
     "timm>=0.9.12"
 ]
@@ -39,3 +40,21 @@ imgtagplus = "imgtagplus.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".cache",
+    "build",
+    "node_modules",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

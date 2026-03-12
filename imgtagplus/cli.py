@@ -1,21 +1,27 @@
-"""Command-line interface for ImgTagPlus."""
+"""CLI entry points for both the interactive manager and headless tagging mode."""
 
 from __future__ import annotations
 
 import argparse
-import sys
 import os
 import signal
 import subprocess
+import sys
+import tempfile
 import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 
-import tempfile
+import psutil
+
 from imgtagplus import __version__
 
-PID_FILE = Path(tempfile.gettempdir()) / "imgtagplus_server.pid"
+_PID_SUFFIX = str(os.getuid()) if hasattr(os, "getuid") else "default"
+PID_FILE = Path(tempfile.gettempdir()) / f"imgtagplus_server_{_PID_SUFFIX}.pid"
 
 def _get_server_pid() -> int | None:
+    """Return the last recorded daemon PID, or None if the pid file is missing/invalid."""
     if PID_FILE.exists():
         try:
             return int(PID_FILE.read_text().strip())
@@ -30,8 +36,31 @@ def _is_process_running(pid: int) -> bool:
         return False
     return True
 
+
+def _is_imgtagplus_server_process(pid: int) -> bool:
+    """Confirm the stored PID still belongs to an ImgTagPlus server before signaling it."""
+    try:
+        process = psutil.Process(pid)
+        cmdline = " ".join(process.cmdline())
+    except (psutil.Error, OSError):
+        return False
+
+    return "imgtagplus" in cmdline and "server.py" in cmdline
+
+
+def _wait_for_server_ready(url: str, attempts: int = 20, delay: float = 0.25) -> bool:
+    """Poll the health endpoint so the CLI only reports success once the UI can answer requests."""
+    for _ in range(attempts):
+        try:
+            with urllib.request.urlopen(url, timeout=1) as response:
+                if response.status == 200:
+                    return True
+        except (urllib.error.URLError, TimeoutError):
+            time.sleep(delay)
+    return False
+
 def start_server_daemon(ffsa: bool = False, sandbox_dir: str | None = None) -> None:
-    """Spawns the FastAPI server in the background."""
+    """Spawn the Web UI server in a detached process and persist its PID for later control."""
     pid = _get_server_pid()
     if pid and _is_process_running(pid):
         print(f"Server is already running (PID {pid}).")
@@ -63,14 +92,25 @@ def start_server_daemon(ffsa: bool = False, sandbox_dir: str | None = None) -> N
         start_new_session=True # Detach from terminal
     )
     
+    # Persist the PID immediately so later stop/restart commands can recover even across shells.
     PID_FILE.write_text(str(proc.pid))
-    print(f"Server started on http://127.0.0.1:5000 (PID {proc.pid})")
+    if _wait_for_server_ready("http://127.0.0.1:5000/health"):
+        print(f"Server started on http://127.0.0.1:5000 (PID {proc.pid})")
+        return
+
+    print(f"Server process started (PID {proc.pid}), but /health did not become ready in time.")
 
 def stop_server_daemon() -> None:
-    """Stops the FastAPI server."""
+    """Stop the background Web UI server, but only if the pid file still points at our process."""
     pid = _get_server_pid()
     if not pid or not _is_process_running(pid):
         print("Server is not currently running.")
+        if PID_FILE.exists():
+            PID_FILE.unlink()
+        return
+
+    if not _is_imgtagplus_server_process(pid):
+        print("PID file does not point to an ImgTagPlus server. Refusing to stop it.")
         if PID_FILE.exists():
             PID_FILE.unlink()
         return
@@ -90,6 +130,7 @@ def stop_server_daemon() -> None:
     print("Server stopped.")
 
 def restart_server_daemon() -> None:
+    """Bounce the background server through the same guarded stop/start path used elsewhere."""
     stop_server_daemon()
     time.sleep(1)
     start_server_daemon()
@@ -117,7 +158,11 @@ def print_menu():
     print("="*40)
 
 def run_interactive_menu():
-    """Interactive CLI menu loop."""
+    """Interactive CLI menu loop.
+
+    The menu is intentionally thin: once it has collected a few prompts, it reuses the same
+    `imgtagplus.app.run()` entry point as the non-interactive CLI to keep behavior aligned.
+    """
     while True:
         print_menu()
         choice = input("\nSelect an option: ").strip()
@@ -149,7 +194,7 @@ def run_interactive_menu():
             output_dir_str = input("\nOutput directory for XMP files (leave blank for alongside source): ").strip()
             output_dir = Path(output_dir_str) if output_dir_str else None
                 
-            # Create mock args and pass to app.py
+            # Reuse the headless execution path so the menu and argparse modes stay in sync.
             args = argparse.Namespace(
                 input=Path(input_path),
                 recursive=True,
@@ -200,8 +245,18 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--start-server", action="store_true", help="Start the Web UI server in the background")
     p.add_argument("--stop-server", action="store_true", help="Stop the Web UI server")
     p.add_argument("--restart-server", action="store_true", help="Restart the Web UI server")
-    p.add_argument("--full-file-system-access", "--ffsa", action="store_true", help="Allow Web UI file picker to access the entire file system")
-    p.add_argument("--sandbox", action="store_true", default=True, help="Run Web UI in sandbox mode (default). File picker restricted to sandbox directory.")
+    p.add_argument(
+        "--full-file-system-access",
+        "--ffsa",
+        action="store_true",
+        help="Allow Web UI file picker to access the entire file system",
+    )
+    p.add_argument(
+        "--sandbox",
+        action="store_true",
+        default=True,
+        help="Run Web UI in sandbox mode (default). File picker restricted to sandbox directory.",
+    )
     p.add_argument("--sandbox-dir", type=Path, default=None, help="Custom sandbox directory path (default: ./sandbox)")
 
     # ── Input / Output (Headless) ──────────────────────────────────────────
@@ -252,6 +307,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     # ── Execution mode ─────────────────────────────────────────────────────
     p.add_argument(
+        "--overwrite",
+        action="store_true",
+        default=False,
+        help="Overwrite existing tags instead of merging with them.",
+    )
+    p.add_argument(
         "-s", "--silent",
         action="store_true",
         default=False,
@@ -281,10 +342,13 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 def main(argv: list[str] | None = None) -> None:
-    """Entry point — parse args and run the application."""
-    # If no arguments are provided to the script, launch the interactive menu
+    """Dispatch to the menu, server lifecycle commands, or headless tagging.
+
+    Running with no args is a user-facing shortcut into the interactive manager; any explicit
+    flags bypass the menu and behave like a traditional CLI.
+    """
     if (argv is None and len(sys.argv) == 1) or (argv is not None and len(argv) == 0):
-        # We handle KeyboardInterrupt gracefully for the menu
+        # Keep Ctrl+C from dumping a traceback when the user is just backing out of the menu.
         try:
             run_interactive_menu()
         except KeyboardInterrupt:
@@ -294,7 +358,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    # Handle Server Commands
+    # Server flags are handled first so they never fall through into a tagging run.
     if args.start_server:
         start_server_daemon(
             ffsa=args.full_file_system_access,
@@ -308,7 +372,7 @@ def main(argv: list[str] | None = None) -> None:
         restart_server_daemon()
         sys.exit(0)
 
-    # Handle Headless Tagging Request
+    # Everything else is treated as a headless tagging invocation.
     if args.input is None:
         parser.error("The -i/--input argument is required for headless tagging.")
 

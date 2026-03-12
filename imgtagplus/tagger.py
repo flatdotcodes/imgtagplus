@@ -7,11 +7,11 @@ defined in ``imgtagplus.tags``.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
 from pathlib import Path
-from typing import Sequence
 
 import numpy as np
 from PIL import Image
@@ -33,6 +33,9 @@ _IMAGE_SIZE = 224
 _SOT_TOKEN = 49406
 _EOT_TOKEN = 49407
 _CONTEXT_LENGTH = 77
+_TAG_EMBED_BATCH_SIZE = 64
+_TAG_EMBED_CACHE_PREFIX = "clip_tag_embeddings"
+_LOGIT_SCALE = 100.0
 
 
 # ---------------------------------------------------------------------------
@@ -140,6 +143,9 @@ class Tagger:
     model_dir:
         Directory to cache downloaded model files.  Defaults to
         ``~/.cache/imgtagplus``.
+    accelerator:
+        Preferred ONNX Runtime execution provider. When omitted, the CPU
+        provider is used.
     """
 
     def __init__(self, model_dir: Path | None = None, accelerator: str | None = None) -> None:
@@ -184,15 +190,20 @@ class Tagger:
     # -- public API -----------------------------------------------------------
 
     def precompute_tag_embeddings(self, tags: list[str]) -> None:
-        """Pre-compute text embeddings for all tags (run once)."""
+        """Pre-compute and cache normalised text embeddings for a tag list."""
+        cache_path = self._tag_embedding_cache_path(tags)
+        if cache_path.exists():
+            self._text_embeds = np.load(cache_path).astype(np.float32)
+            log.info("Loaded cached text embeddings from %s", cache_path)
+            return
+
         log.info("Pre-computing text embeddings for %d tags …", len(tags))
 
         # Process tags in batches to stay within memory.
-        batch_size = 64
         all_embeds: list[np.ndarray] = []
 
-        for start in range(0, len(tags), batch_size):
-            batch_tags = tags[start : start + batch_size]
+        for start in range(0, len(tags), _TAG_EMBED_BATCH_SIZE):
+            batch_tags = tags[start : start + _TAG_EMBED_BATCH_SIZE]
             # Prefix each tag with "a photo of " for better CLIP performance.
             prompts = [f"a photo of {t}" for t in batch_tags]
             input_ids = self._tokenizer.tokenize(prompts)
@@ -222,6 +233,8 @@ class Tagger:
         norms = np.linalg.norm(self._text_embeds, axis=1, keepdims=True)
         norms = np.maximum(norms, 1e-8)
         self._text_embeds /= norms
+        np.save(cache_path, self._text_embeds)
+        log.info("Cached text embeddings at %s", cache_path)
         log.info("Text embeddings ready: shape %s", self._text_embeds.shape)
 
     def tag_image(
@@ -265,10 +278,7 @@ class Tagger:
 
         # Convert to pseudo-probabilities with a softmax-like scaling.
         # CLIP uses a learned temperature; we approximate with 100.
-        logits = similarities * 100.0
-        # Shift for numerical stability, then sigmoid for per-tag scores.
-        scores = 1.0 / (1.0 + np.exp(-logits + np.median(logits)))
-
+        logits = similarities * _LOGIT_SCALE
         # Also compute softmax for ranking.
         exp_logits = np.exp(logits - logits.max())
         softmax_scores = exp_logits / exp_logits.sum()
@@ -278,6 +288,8 @@ class Tagger:
         results: list[tuple[str, float]] = []
         for idx in ranked:
             score = float(softmax_scores[idx])
+            # Keep the best match even on weak images so callers are not forced
+            # to special-case an empty result when CLIP produced a ranking.
             if score < threshold and len(results) > 0:
                 break
             results.append((tags[int(idx)], round(score, 4)))
@@ -289,7 +301,7 @@ class Tagger:
     # -- internals ------------------------------------------------------------
 
     def _ensure_file(self, rel_path: str) -> Path:
-        """Download a file from HF Hub if not already cached."""
+        """Resolve a CLIP asset path, downloading it through the HF cache if needed."""
         from huggingface_hub import hf_hub_download
 
         log.debug("Ensuring model file: %s", rel_path)
@@ -299,6 +311,11 @@ class Tagger:
             cache_dir=str(self._model_dir),
         )
         return Path(local)
+
+    def _tag_embedding_cache_path(self, tags: list[str]) -> Path:
+        """Return the cache path keyed by the exact ordered tag vocabulary."""
+        digest = hashlib.sha256("\n".join(tags).encode("utf-8")).hexdigest()[:16]
+        return self._model_dir / f"{_TAG_EMBED_CACHE_PREFIX}_{digest}.npy"
 
     @staticmethod
     def _load_image(path: Path) -> np.ndarray:

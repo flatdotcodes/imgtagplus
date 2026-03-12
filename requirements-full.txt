@@ -1,0 +1,7 @@
+-r requirements-clip.txt
+
+optimum[onnxruntime]>=0.109.0
+torch>=2.1.0
+transformers>=4.44.2,<5.0.0
+einops>=0.7.0
+timm>=0.9.12

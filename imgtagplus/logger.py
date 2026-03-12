@@ -11,9 +11,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-
 LOG_FORMAT = "%(asctime)s  %(levelname)-8s  %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+DEFAULT_LOG_DIR = Path.cwd().resolve()
 
 
 def setup_logging(
@@ -33,7 +33,7 @@ def setup_logging(
     """
     if log_file is None:
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_file = Path.cwd() / f"imgtagplus_{ts}.log"
+        log_file = DEFAULT_LOG_DIR / f"imgtagplus_{ts}.log"
 
     log_file = log_file.resolve()
     log_file.parent.mkdir(parents=True, exist_ok=True)

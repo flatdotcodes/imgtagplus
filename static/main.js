@@ -1,4 +1,4 @@
-/** static/main.js **/
+/** Frontend controller for the single-page tagging UI and its long-running job state. */
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const maxTagsInput = document.getElementById('max-tags');
     const maxTagsVal = document.getElementById('max-tags-val');
     const recursiveCheck = document.getElementById('recursive');
+    const overwriteCheck = document.getElementById('overwrite');
     const startBtn = document.getElementById('start-btn');
     const errorMsg = document.getElementById('error-msg');
     
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Stats Elements
     const statsContainer = document.getElementById('stats-container');
     const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
     
     // Hardware Elements
     const hardwarePanel = document.getElementById('hardware-panel');
@@ -71,6 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const labelMps = document.getElementById('label-accel-mps');
     const tipCuda = document.getElementById('tip-cuda');
     const tipMps = document.getElementById('tip-mps');
+    const dialogStates = new WeakMap();
+    const themeController = window.imgtagplusTheme;
 
     // Click handlers for tips (ensures visibility on mobile/click)
     [tipCuda, tipMps].forEach(tip => {
@@ -82,12 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // State
+    // State shared across event handlers. `isProcessing` mirrors backend status; `eventSource`
+    // is the single SSE pipe used to stream progress/log events for the active job.
     let models = [];
     let isProcessing = false;
     let eventSource = null;
     let currentBrowsePath = "";
     let browseTarget = 'input'; // 'input' or 'output' — which field the file picker populates
+    let detectedAccelerator = 'cpu';
+    let lastManualAccelerator = 'cpu';
 
     // ----- Slider Progress -----
 
@@ -97,6 +104,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const val = parseFloat(input.value);
         const progress = ((val - min) / (max - min)) * 100;
         input.style.setProperty('--slider-value', `${progress}%`);
+    }
+
+    function getSelectedAccelerator() {
+        return Array.from(accelRadios).find((radio) => radio.checked)?.value || null;
+    }
+
+    function setSelectedAccelerator(value) {
+        const availableRadio = Array.from(accelRadios).find((radio) => radio.value === value && !radio.disabled)
+            || Array.from(accelRadios).find((radio) => radio.value === detectedAccelerator && !radio.disabled)
+            || Array.from(accelRadios).find((radio) => !radio.disabled);
+
+        if (availableRadio) {
+            availableRadio.checked = true;
+            lastManualAccelerator = availableRadio.value;
+        }
+    }
+
+    function getEffectiveAccelerator() {
+        return manualAccelToggle.checked
+            ? (getSelectedAccelerator() || lastManualAccelerator || detectedAccelerator)
+            : detectedAccelerator;
+    }
+
+    function syncAcceleratorUI() {
+        if (manualAccelToggle.checked && (!getSelectedAccelerator() || document.querySelector('input[name="accel-choice"]:checked')?.disabled)) {
+            setSelectedAccelerator(lastManualAccelerator);
+        }
+
+        const effectiveAccelerator = getEffectiveAccelerator();
+        manualAccelStatus.textContent = manualAccelToggle.checked
+            ? `enabled (${effectiveAccelerator.toUpperCase()})`
+            : 'disabled';
+        accelOptionsDiv.classList.toggle('hidden', !manualAccelToggle.checked);
+        accelSpec.textContent = manualAccelToggle.checked
+            ? `${effectiveAccelerator.toUpperCase()} (manual)`
+            : detectedAccelerator.toUpperCase();
     }
 
     // ----- Initialization -----
@@ -134,6 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Set up Manual Accelerator options based on system capabilities
             const sysAccel = data.hardware.accelerator;
+            detectedAccelerator = sysAccel;
+            lastManualAccelerator = sysAccel;
             if (sysAccel === 'cuda') {
                 accelCuda.disabled = false;
                 labelCuda.classList.remove('text-muted-foreground');
@@ -162,7 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 tipMps.classList.remove('hidden');
             }
 
-            // Check if already running
+            syncAcceleratorUI();
+
+            // If the page is refreshed mid-run, restore the locked UI and reconnect to the stream.
             const statusRes = await fetch('/api/status');
             const statusData = await statusRes.json();
             if (statusData.is_processing) {
@@ -217,17 +264,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manual Accelerator toggle
     manualAccelToggle.addEventListener('change', () => {
         if (manualAccelToggle.checked) {
-            manualAccelStatus.textContent = 'enabled';
-            accelOptionsDiv.classList.remove('hidden');
-        } else {
-            manualAccelStatus.textContent = 'disabled';
-            accelOptionsDiv.classList.add('hidden');
+            setSelectedAccelerator(lastManualAccelerator);
         }
+        syncAcceleratorUI();
+    });
+
+    Array.from(accelRadios).forEach((radio) => {
+        radio.addEventListener('change', () => {
+            if (radio.checked) {
+                lastManualAccelerator = radio.value;
+                syncAcceleratorUI();
+            }
+        });
     });
     
-    // Dialog openers — native showModal()
-    helpBtn.addEventListener('click', () => {
-        // Sync dark mode toggle state before showing
+    function syncHelpDialogState() {
         const darkToggle = document.getElementById('dark-mode-toggle');
         const darkLabel = document.getElementById('dark-mode-label');
         if (darkToggle) {
@@ -237,17 +288,96 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? 'Dark mode <span class="font-medium">enabled</span>'
                 : 'Light mode <span class="font-medium">enabled</span>';
         }
-        helpDialog.showModal();
-    });
-    accelBox.addEventListener('click', () => accelDialog.showModal());
-    perfBox.addEventListener('click', () => perfDialog.showModal());
+    }
+
+    function openDialog(dialog, options = {}) {
+        if (!dialog || dialog.open) {
+            return;
+        }
+
+        const state = {
+            opener: options.opener ?? document.activeElement,
+            onClose: options.onClose ?? null
+        };
+
+        dialogStates.set(dialog, state);
+        if (typeof options.beforeOpen === 'function') {
+            options.beforeOpen();
+        }
+        dialog.showModal();
+    }
+
+    function cleanupDialog(dialog) {
+        const state = dialogStates.get(dialog) ?? {};
+        const activeElement = document.activeElement;
+
+        if (activeElement && dialog.contains(activeElement) && typeof activeElement.blur === 'function') {
+            activeElement.blur();
+        }
+
+        if (typeof state.onClose === 'function') {
+            state.onClose(state);
+        }
+
+        dialogStates.delete(dialog);
+    }
+
+    function requestDialogClose(dialog) {
+        if (dialog?.open) {
+            dialog.close();
+        }
+    }
+
+    function wireDialog(dialog, options = {}) {
+        if (!dialog) {
+            return;
+        }
+
+        dialog.addEventListener('click', (event) => {
+            if (event.target === dialog) {
+                requestDialogClose(dialog);
+            }
+        });
+
+        dialog.addEventListener('cancel', (event) => {
+            event.preventDefault();
+            requestDialogClose(dialog);
+        });
+
+        dialog.addEventListener('close', () => cleanupDialog(dialog));
+
+        dialog.querySelectorAll('[data-dialog-close]').forEach((button) => {
+            button.addEventListener('click', () => requestDialogClose(dialog));
+        });
+    }
+
+    wireDialog(helpDialog);
+    wireDialog(perfDialog);
+    wireDialog(accelDialog);
+    wireDialog(filePickerDialog);
+
+    // Dialog openers — native showModal()
+    helpBtn.addEventListener('click', () => openDialog(helpDialog, {
+        opener: helpBtn,
+        beforeOpen: syncHelpDialogState,
+        onClose: ({ opener }) => opener?.blur()
+    }));
+    accelBox.addEventListener('click', () => openDialog(accelDialog, {
+        opener: accelBox,
+        beforeOpen: syncAcceleratorUI
+    }));
+    perfBox.addEventListener('click', () => openDialog(perfDialog, { opener: perfBox }));
 
     // Dark mode toggle in Help dialog
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const darkModeLabel = document.getElementById('dark-mode-label');
     darkModeToggle.addEventListener('change', () => {
         const mode = darkModeToggle.checked ? 'dark' : 'light';
-        document.dispatchEvent(new CustomEvent('basecoat:theme', { detail: { mode } }));
+        if (themeController?.applyTheme) {
+            themeController.applyTheme(mode);
+        } else {
+            document.dispatchEvent(new CustomEvent('basecoat:theme', { detail: { mode } }));
+        }
         if (darkModeLabel) darkModeLabel.innerHTML = darkModeToggle.checked
             ? 'Dark mode <span class="font-medium">enabled</span>'
             : 'Light mode <span class="font-medium">enabled</span>';
@@ -263,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         openFilePicker(outputDirInput.value.trim());
     });
 
-    cancelFilePickerBtn.addEventListener('click', () => filePickerDialog.close());
+    cancelFilePickerBtn.addEventListener('click', () => requestDialogClose(filePickerDialog));
     
     selectDirBtn.addEventListener('click', () => {
         if (currentBrowsePath) {
@@ -273,14 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputPath.value = currentBrowsePath;
             }
         }
-        filePickerDialog.close();
-    });
-
-    // Close dialogs on backdrop click
-    [helpDialog, perfDialog, accelDialog, filePickerDialog].forEach(dialog => {
-        dialog.addEventListener('click', (e) => {
-            if (e.target === dialog) dialog.close();
-        });
+        requestDialogClose(filePickerDialog);
     });
 
     // ----- Functions -----
@@ -306,11 +429,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openFilePicker(initialPath = "") {
-        filePickerDialog.showModal();
+        const opener = browseTarget === 'output' ? outputBrowseBtn : browseBtn;
+        openDialog(filePickerDialog, { opener });
         loadDirectory(initialPath);
     }
 
     async function loadDirectory(path) {
+        // The browser cannot enumerate local folders directly, so the dialog proxies every step
+        // through `/api/browse` and redraws from the server's constrained view of the filesystem.
         dirList.innerHTML = '<div class="p-4 text-center text-sm text-muted-foreground">Loading...</div>';
         try {
             const res = await fetch(`/api/browse?path=${encodeURIComponent(path)}`);
@@ -368,6 +494,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         errorMsg.classList.add("hidden");
+        // Flip the UI into the running state before the POST resolves so double-submits are blocked
+        // and the SSE connection is ready to receive the first progress event immediately.
         setProcessingState(true);
 
         try {
@@ -376,17 +504,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 model_id: modelSelect.value,
                 threshold: parseFloat(thresholdInput.value),
                 max_tags: parseInt(maxTagsInput.value),
-                recursive: recursiveCheck.checked
+                recursive: recursiveCheck.checked,
+                overwrite: overwriteCheck.checked
             };
 
             if (manualAccelToggle.checked) {
-                const selected = document.querySelector('input[name="accel-choice"]:checked');
-                if (selected) {
-                    payload.accelerator = selected.value;
-                }
+                payload.accelerator = getEffectiveAccelerator();
             }
 
-            // Add output_dir if separate directory is selected
+            // Only send optional fields the backend should actually honor for this run.
             if (outputToggle.checked && outputDirInput.value.trim()) {
                 payload.output_dir = outputDirInput.value.trim();
             }
@@ -403,7 +529,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             logContainer.innerHTML = '';
-            addLog({level: "INFO", message: `Starting job via ${modelSelect.value}...`});
+            const acceleratorLabel = manualAccelToggle.checked
+                ? `${payload.accelerator?.toUpperCase()} (manual)`
+                : `${detectedAccelerator.toUpperCase()} (auto)`;
+            addLog({level: "INFO", message: `Starting job via ${modelSelect.value} on ${acceleratorLabel}...`});
 
         } catch (e) {
             errorMsg.textContent = e.message;
@@ -413,13 +542,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setProcessingState(processing) {
+        // Centralize the "job is running" transition so button state, inputs, status text and SSE
+        // lifecycle never drift apart when init(), startJob() or stream events toggle it.
         isProcessing = processing;
         inputPath.disabled = processing;
         modelSelect.disabled = processing;
         thresholdInput.disabled = processing;
         maxTagsInput.disabled = processing;
         recursiveCheck.disabled = processing;
-        
+        overwriteCheck.disabled = processing;
+
         if (processing) {
             startBtn.disabled = true;
             startBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
@@ -452,6 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (data.type === 'progress') {
                 if (data.done) {
+                    // Completion is signaled on the stream, not the original POST response.
                     setProcessingState(false);
                     progressTitle.textContent = "Finished";
                     progressFile.textContent = "Task complete.";
@@ -480,6 +613,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 addLog(data);
             }
             else if (data.type === 'idle') {
+                // `/api/status` can reconnect us to a stale stream after a refresh; an explicit idle
+                // event is the backend's way to tell the frontend that nothing is actively running.
                 if(isProcessing) {
                     setProcessingState(false);
                 }

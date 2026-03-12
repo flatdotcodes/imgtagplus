@@ -33,6 +33,7 @@ def write_xmp(
     image_path: Path,
     tags: Sequence[str],
     output_dir: Path | None = None,
+    overwrite: bool = False,
 ) -> Path:
     """Write (or merge into) an XMP sidecar file for *image_path*.
 
@@ -45,6 +46,8 @@ def write_xmp(
     output_dir:
         Directory for the ``.xmp`` file.  Defaults to the same
         directory as the image.
+    overwrite:
+        If ``True``, replace existing tags entirely instead of merging.
 
     Returns
     -------
@@ -57,9 +60,9 @@ def write_xmp(
 
     xmp_path = output_dir / (image_path.stem + ".xmp")
 
-    # If the sidecar already exists, merge tags.
+    # If the sidecar already exists, merge tags (unless overwriting).
     existing_tags: set[str] = set()
-    if xmp_path.exists():
+    if not overwrite and xmp_path.exists():
         existing_tags = _read_existing_tags(xmp_path)
         log.debug("Existing XMP has %d tags: %s", len(existing_tags), xmp_path)
 
