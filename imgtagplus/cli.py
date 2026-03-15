@@ -396,6 +396,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Custom log file path (default: imgtagplus_TIMESTAMP.log).",
     )
 
+    p.add_argument(
+        "--no-tui",
+        action="store_true",
+        default=False,
+        help="Use the plain text menu instead of the Textual TUI.",
+    )
+
     return p
 
 def main(argv: list[str] | None = None) -> None:
@@ -404,8 +411,22 @@ def main(argv: list[str] | None = None) -> None:
     Running with no args is a user-facing shortcut into the interactive manager; any explicit
     flags bypass the menu and behave like a traditional CLI.
     """
-    if (argv is None and len(sys.argv) == 1) or (argv is not None and len(argv) == 0):
+    _raw_argv = sys.argv[1:] if argv is None else list(argv)
+    _interactive_flags = {a for a in _raw_argv if a not in ("--no-tui",)}
+    _is_interactive = not _interactive_flags
+
+    if _is_interactive:
         # Keep Ctrl+C from dumping a traceback when the user is just backing out of the menu.
+        no_tui = os.environ.get("IMGTAGPLUS_NO_TUI", "").strip() not in ("", "0", "false", "False")
+        if not no_tui:
+            no_tui = "--no-tui" in _raw_argv
+        if not no_tui:
+            try:
+                from imgtagplus.tui import launch_tui
+                launch_tui()
+                sys.exit(0)
+            except ImportError:
+                pass  # textual not installed → fall through to plain menu
         try:
             run_interactive_menu()
         except KeyboardInterrupt:

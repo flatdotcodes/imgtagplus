@@ -1,0 +1,297 @@
+/* ImgTagPlus TUI Stylesheet — zinc/neutral dark palette */
+
+/* ── Color tokens ─────────────────────────────────────────────────────── */
+$background:        #09090b;
+$surface:           #18181b;
+$surface-raised:    #27272a;
+$border-color:      #3f3f46;
+$muted:             #71717a;
+$foreground:        #fafafa;
+$primary:           #6366f1;
+$success:           #22c55e;
+$destructive:       #ef4444;
+
+/* ── App / Screen ─────────────────────────────────────────────────────── */
+Screen {
+    background: $background;
+    color: $foreground;
+    /* Fill the entire terminal — no external scrolling */
+    layout: vertical;
+    overflow: hidden hidden;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+Header {
+    background: $surface;
+    color: $foreground;
+    dock: top;
+    height: 1;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────── */
+Footer {
+    background: $surface;
+    color: $muted;
+    dock: bottom;
+    height: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  DASHBOARD SCREEN                                                        */
+/* ─────────────────────────────────────────────────────────────────────── */
+
+/* Status card — takes only as much height as its content needs */
+#server-status-card {
+    background: $surface;
+    border: round $border-color;
+    height: auto;
+    padding: 0 2;
+    margin: 1 1 0 1;
+    /* no bottom margin — action panel sits directly below */
+}
+
+#status-title {
+    color: $foreground;
+    text-style: bold;
+    padding: 1 0 0 0;
+}
+
+#status-detail {
+    color: $foreground;
+    padding: 0 0 1 0;
+}
+
+/* Action panel — expands to fill all remaining vertical space */
+#action-panel {
+    background: $surface;
+    border: round $border-color;
+    height: 1fr;
+    margin: 1 1 1 1;
+    padding: 0;
+    /* align children to the top so they don't stretch to fill */
+    align: left top;
+}
+
+#action-title {
+    color: $muted;
+    text-style: bold;
+    padding: 1 2 0 2;
+}
+
+#action-rule {
+    color: $border-color;
+    margin: 0 2;
+}
+
+/* Action buttons — compact 1-row list items, full-width, left-aligned */
+Button.action-btn {
+    background: transparent;
+    border: none;
+    color: $foreground;
+    content-align: left middle;
+    height: 1;
+    min-height: 1;
+    margin: 0;
+    padding: 0 2;
+    width: 1fr;
+    text-style: none;
+}
+
+Button.action-btn:hover {
+    background: $surface-raised;
+    color: $foreground;
+}
+
+Button.action-btn:focus {
+    background: $surface-raised;
+    color: $foreground;
+    text-style: bold;
+}
+
+/* Accent variant for the tagging action */
+Button.action-btn.action-btn--accent {
+    color: $primary;
+}
+
+Button.action-btn.action-btn--accent:hover {
+    background: $surface-raised;
+    color: $primary;
+}
+
+Button.action-btn.action-btn--accent:focus {
+    background: $surface-raised;
+    color: $primary;
+    text-style: bold;
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  TAGGING FORM SCREEN                                                     */
+/* ─────────────────────────────────────────────────────────────────────── */
+
+/* Outer scroller fills the full body (between Header and Footer) */
+#tagging-scroll {
+    height: 1fr;
+    padding: 0;
+}
+
+/* Inner form with comfortable padding */
+#tagging-form {
+    padding: 1 2;
+    height: auto;
+}
+
+#form-title {
+    color: $foreground;
+    text-style: bold;
+    margin-bottom: 0;
+}
+
+.form-label {
+    color: $muted;
+    margin-top: 1;
+    margin-bottom: 0;
+}
+
+Input {
+    background: $surface-raised;
+    border: tall $border-color;
+    color: $foreground;
+    margin-bottom: 0;
+}
+
+Input:focus {
+    border: tall $primary;
+}
+
+Select {
+    background: $surface-raised;
+    border: tall $border-color;
+    color: $foreground;
+    margin-bottom: 0;
+}
+
+Select:focus {
+    border: tall $primary;
+}
+
+/* Options row — three equal columns */
+#options-row {
+    height: auto;
+    margin-top: 1;
+    margin-bottom: 0;
+}
+
+.option-block {
+    width: 1fr;
+    padding: 0 0 0 0;
+}
+
+.option-block:first-child {
+    padding-right: 1;
+}
+
+.option-block:last-child {
+    padding-left: 1;
+}
+
+.option-label {
+    color: $muted;
+    margin-bottom: 0;
+}
+
+/* Run button — full width, primary style */
+#btn-run {
+    margin-top: 1;
+    width: 100%;
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  PROGRESS SCREEN                                                         */
+/* ─────────────────────────────────────────────────────────────────────── */
+
+/* Container fills entire body; Log gets the remaining 1fr */
+#progress-container {
+    height: 1fr;
+    padding: 1 2 0 2;
+}
+
+#progress-meta {
+    color: $muted;
+    height: auto;
+    margin-bottom: 1;
+}
+
+ProgressBar {
+    height: auto;
+    margin-bottom: 1;
+}
+
+ProgressBar > .bar--bar {
+    color: $primary;
+}
+
+ProgressBar > .bar--complete {
+    color: $success;
+}
+
+/* Log expands to fill all remaining height */
+#log-view {
+    background: $surface;
+    border: round $border-color;
+    height: 1fr;
+    scrollbar-color: $border-color;
+    scrollbar-background: $background;
+}
+
+#progress-buttons {
+    height: auto;
+    padding: 1 0;
+    align: left middle;
+}
+
+#btn-cancel {
+    min-width: 12;
+}
+
+/* ── Exit confirmation modal ──────────────────────────────────────────── */
+ExitConfirmScreen {
+    align: center middle;
+}
+
+#exit-dialog {
+    background: $surface;
+    border: round $border-color;
+    padding: 2 4;
+    width: 52;
+    height: auto;
+}
+
+#exit-dialog-title {
+    text-style: bold;
+    color: $foreground;
+    margin-bottom: 0;
+}
+
+#exit-dialog-subtitle {
+    color: $muted;
+    margin-bottom: 1;
+}
+
+#exit-dialog Button {
+    width: 100%;
+    margin-top: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  SHARED WIDGETS                                                          */
+/* ─────────────────────────────────────────────────────────────────────── */
+
+Rule {
+    color: $border-color;
+    margin: 0;
+}
+
+/* Inline status badge colours (applied via markup) */
+.badge-success { color: $success; }
+.badge-destructive { color: $destructive; }
+.badge-muted { color: $muted; }

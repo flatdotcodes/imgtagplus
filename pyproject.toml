@@ -32,7 +32,8 @@ dependencies = [
     "torch>=2.1.0",
     "transformers>=4.44.2,<5.0.0",
     "einops>=0.7.0",
-    "timm>=0.9.12"
+    "timm>=0.9.12",
+    "textual>=0.60.0"
 ]
 
 [project.scripts]
