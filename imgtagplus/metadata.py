@@ -75,6 +75,24 @@ def write_xmp(
     return xmp_path
 
 
+def sidecar_path_for_image(image_path: Path, output_dir: Path | None = None) -> Path:
+    """Return the XMP sidecar path associated with *image_path*."""
+    sidecar_dir = output_dir if output_dir is not None else image_path.parent
+    return sidecar_dir / f"{image_path.stem}.xmp"
+
+
+def read_xmp_tags(image_path: Path, output_dir: Path | None = None) -> list[str]:
+    """Return sorted tags from the XMP sidecar for *image_path*.
+
+    Missing sidecars are treated as empty metadata rather than an error so
+    callers can render "untagged" images without extra exception handling.
+    """
+    xmp_path = sidecar_path_for_image(image_path, output_dir=output_dir)
+    if not xmp_path.exists():
+        return []
+    return sorted(_read_existing_tags(xmp_path))
+
+
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------

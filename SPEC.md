@@ -36,6 +36,17 @@ ImgTagPlus is a local-first image-tagging tool that scans images on disk, runs a
 - Malformed existing XMP is treated as unreadable input and ignored with a warning rather than crashing the run.
 - XML-special characters in tags must be escaped correctly.
 
+## Viewer behavior
+
+- The web UI includes a viewer mode for browsing a selected directory of images.
+- Viewer browsing reuses the existing sandbox-aware directory picker.
+- The viewer lists supported image files from the selected directory and can optionally include subdirectories recursively.
+- The viewer supports both grid and list preview modes for the loaded files.
+- The viewer reads tags from `.xmp` sidecar files located next to each image.
+- Images without sidecar tags still appear in the viewer and show an explicit empty-tag state.
+- The lightbox supports previous/next navigation and keyboard shortcuts with `ArrowLeft`, `ArrowRight`, and `Escape`.
+- The lightbox keeps a consistent preview frame size while navigating between images.
+
 ## Zero-images behavior
 
 - When the scanner finds no supported images at the given path, `app.run()` returns exit code `0` but fires a progress callback with `(0, 0, "")` to signal an empty result.
@@ -46,7 +57,7 @@ ImgTagPlus is a local-first image-tagging tool that scans images on disk, runs a
 
 - All HTTP responses include `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, and a restrictive `Content-Security-Policy`.
 - POST, PUT, and DELETE requests are subject to origin validation; only `localhost` and `127.0.0.1` origins are accepted.
-- Rate limiting is enforced per client IP on browse and tag endpoints.
+- Rate limiting is enforced per client IP on browse, image, and tag endpoints.
 - SSE connections are limited to 5 concurrent clients.
 - The frontend escapes all server-provided strings before HTML interpolation to prevent XSS.
 - Florence-2 `trust_remote_code` is only enabled for model IDs in the pinned revision allowlist.
@@ -60,6 +71,7 @@ ImgTagPlus is a local-first image-tagging tool that scans images on disk, runs a
 ## Operational behavior
 
 - The server exposes `/health` for readiness checks.
+- The server exposes `/api/images` for viewer image/tag listing and `/api/image` for serving viewer image assets to the local browser.
 - Only one tagging job may run at a time in the current server architecture.
 - Log files are written to the process log directory and can be downloaded from the web UI.
 

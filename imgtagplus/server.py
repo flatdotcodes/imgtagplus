@@ -10,6 +10,7 @@ import asyncio
 import collections
 import json
 import logging
+import mimetypes
 import os
 import queue
 import threading
@@ -25,7 +26,9 @@ from fastapi.staticfiles import StaticFiles
 
 from imgtagplus.app import run as app_run
 from imgtagplus.logger import DEFAULT_LOG_DIR
+from imgtagplus.metadata import read_xmp_tags, sidecar_path_for_image
 from imgtagplus.profiler import get_model_recommendations, get_profiler_summary
+from imgtagplus.scanner import IMAGE_EXTENSIONS, scan
 
 static_dir = Path(__file__).parent / "static"
 static_dir.mkdir(exist_ok=True)
@@ -196,6 +199,22 @@ def _assert_sandbox(path: Path | None) -> None:
     except ValueError as exc:
         raise HTTPException(status_code=403, detail="Access denied: path outside sandbox") from exc
 
+
+def _serialize_image_record(image_path: Path) -> dict[str, object]:
+    """Build a frontend-friendly image record for the viewer grid."""
+    stat = image_path.stat()
+    tags = read_xmp_tags(image_path)
+    xmp_path = sidecar_path_for_image(image_path)
+    return {
+        "path": str(image_path),
+        "name": image_path.name,
+        "modified_at": datetime.fromtimestamp(stat.st_mtime).astimezone().isoformat(),
+        "size_bytes": stat.st_size,
+        "tags": tags,
+        "tag_count": len(tags),
+        "xmp_exists": xmp_path.exists(),
+    }
+
 @app.get("/api/browse")
 async def browse_directory(request: Request, path: str = ""):
     """List visible directories for the file picker within the allowed root."""
@@ -234,6 +253,71 @@ async def browse_directory(request: Request, path: str = ""):
         "items": items,
         "sandbox": not FFSA_ENABLED,
     }
+
+
+@app.get("/api/images")
+async def list_images(
+    request: Request,
+    path: str,
+    recursive: bool = False,
+    offset: int = 0,
+    limit: int = 60,
+):
+    """List images in a directory for the gallery/lightbox viewer."""
+    client_ip = request.client.host if request and request.client else "unknown"
+    if not _check_rate_limit(client_ip, 100):
+        raise HTTPException(status_code=429, detail="Rate limit exceeded")
+
+    if not path:
+        raise HTTPException(status_code=400, detail="Directory path is required")
+
+    directory_path = Path(path)
+    if not directory_path.exists():
+        raise HTTPException(status_code=404, detail="Directory does not exist")
+    if not directory_path.is_dir():
+        raise HTTPException(status_code=400, detail="Path must be a directory")
+
+    _assert_sandbox(directory_path)
+
+    safe_offset = max(0, offset)
+    safe_limit = max(1, min(120, limit))
+    images = scan(directory_path, recursive=recursive)
+    page = images[safe_offset:safe_offset + safe_limit]
+
+    return {
+        "current_path": str(directory_path.resolve()),
+        "images": [_serialize_image_record(image_path) for image_path in page],
+        "total": len(images),
+        "offset": safe_offset,
+        "limit": safe_limit,
+        "has_more": safe_offset + safe_limit < len(images),
+        "recursive": recursive,
+        "sandbox": not FFSA_ENABLED,
+    }
+
+
+@app.get("/api/image")
+async def get_image_file(request: Request, path: str):
+    """Serve a single image file to the same-origin frontend viewer."""
+    client_ip = request.client.host if request and request.client else "unknown"
+    if not _check_rate_limit(client_ip, 200):
+        raise HTTPException(status_code=429, detail="Rate limit exceeded")
+
+    if not path:
+        raise HTTPException(status_code=400, detail="Image path is required")
+
+    image_path = Path(path)
+    if not image_path.exists() or not image_path.is_file():
+        raise HTTPException(status_code=404, detail="Image does not exist")
+
+    _assert_sandbox(image_path)
+
+    resolved_path = image_path.resolve()
+    if resolved_path.suffix.lower() not in IMAGE_EXTENSIONS:
+        raise HTTPException(status_code=400, detail="Unsupported image type")
+
+    media_type = mimetypes.guess_type(resolved_path.name)[0] or "application/octet-stream"
+    return FileResponse(path=resolved_path, filename=resolved_path.name, media_type=media_type)
 
 
 @app.get("/api/models")

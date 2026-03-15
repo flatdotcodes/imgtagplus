@@ -49,12 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const perfDialog = document.getElementById('perf-dialog');
     const accelDialog = document.getElementById('accel-dialog');
     const filePickerDialog = document.getElementById('file-picker-dialog');
+    const lightboxDialog = document.getElementById('lightbox-dialog');
 
     // Dialog openers
+    const showTaggerViewBtn = document.getElementById('show-tagger-view');
+    const showViewerViewBtn = document.getElementById('show-viewer-view');
     const helpBtn = document.getElementById('help-btn');
     const accelBox = document.getElementById('accel-box');
     const perfBox = document.getElementById('perf-box');
     const browseBtn = document.getElementById('browse-btn');
+    const viewerBrowseBtn = document.getElementById('viewer-browse-btn');
 
     // File Picker Elements
     const cancelFilePickerBtn = document.getElementById('cancel-file-picker');
@@ -68,6 +72,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const outputDirFields = document.getElementById('output-dir-fields');
     const outputDirInput = document.getElementById('output-dir');
     const outputBrowseBtn = document.getElementById('output-browse-btn');
+
+    // View Containers
+    const taggerView = document.getElementById('tagger-view');
+    const viewerView = document.getElementById('viewer-view');
+
+    // Viewer Elements
+    const viewerPathInput = document.getElementById('viewer-path');
+    const viewerLoadBtn = document.getElementById('viewer-load-btn');
+    const viewerUseSourceBtn = document.getElementById('viewer-use-source-btn');
+    const viewerRecursiveCheck = document.getElementById('viewer-recursive');
+    const viewerSummary = document.getElementById('viewer-summary');
+    const viewerErrorMsg = document.getElementById('viewer-error-msg');
+    const viewerEmptyState = document.getElementById('viewer-empty-state');
+    const viewerResults = document.getElementById('viewer-results');
+    const viewerFooter = document.getElementById('viewer-footer');
+    const viewerLoadMoreBtn = document.getElementById('viewer-load-more-btn');
+    const viewerCountBadge = document.getElementById('viewer-count-badge');
+    const viewerGridModeBtn = document.getElementById('viewer-grid-mode');
+    const viewerListModeBtn = document.getElementById('viewer-list-mode');
+
+    // Lightbox Elements
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxPosition = document.getElementById('lightbox-position');
+    const lightboxTagCount = document.getElementById('lightbox-tag-count');
+    const lightboxPath = document.getElementById('lightbox-path');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const lightboxTags = document.getElementById('lightbox-tags');
+    const lightboxEmptyTags = document.getElementById('lightbox-empty-tags');
+    const lightboxPrevBtn = document.getElementById('lightbox-prev-btn');
+    const lightboxNextBtn = document.getElementById('lightbox-next-btn');
 
     // Manual Accelerator Elements
     const manualAccelToggle = document.getElementById('manual-accelerator');
@@ -101,9 +136,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let eventSource = null;
     let runtimeTimer = null;
     let currentBrowsePath = "";
-    let browseTarget = 'input'; // 'input' or 'output' — which field the file picker populates
+    let browseTarget = 'input'; // 'input', 'output', or 'viewer' — which field the file picker populates
     let detectedAccelerator = 'cpu';
     let lastManualAccelerator = 'cpu';
+    const viewerPageSize = 24;
+    const viewerState = {
+        currentPath: '',
+        images: [],
+        total: 0,
+        offset: 0,
+        hasMore: false,
+        activeIndex: 0,
+        loading: false,
+        viewMode: 'grid'
+    };
 
     // ----- Slider Progress -----
 
@@ -203,6 +249,220 @@ document.addEventListener('DOMContentLoaded', () => {
             : detectedAccelerator.toUpperCase();
     }
 
+    function updateViewToggle(button, active) {
+        if (!button) {
+            return;
+        }
+
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        button.classList.toggle('bg-background', active);
+        button.classList.toggle('text-foreground', active);
+        button.classList.toggle('shadow-xs', active);
+        button.classList.toggle('text-muted-foreground', !active);
+    }
+
+    function setActiveView(view) {
+        const showingViewer = view === 'viewer';
+        taggerView.classList.toggle('hidden', showingViewer);
+        viewerView.classList.toggle('hidden', !showingViewer);
+        updateViewToggle(showTaggerViewBtn, !showingViewer);
+        updateViewToggle(showViewerViewBtn, showingViewer);
+    }
+
+    function getBrowseOpener() {
+        if (browseTarget === 'output') {
+            return outputBrowseBtn;
+        }
+        if (browseTarget === 'viewer') {
+            return viewerBrowseBtn;
+        }
+        return browseBtn;
+    }
+
+    function getViewerImageUrl(path) {
+        return `/api/image?path=${encodeURIComponent(path)}`;
+    }
+
+    function setViewerError(message = '') {
+        viewerErrorMsg.textContent = message;
+        viewerErrorMsg.classList.toggle('hidden', !message);
+    }
+
+    function setViewerEmptyState(title, description) {
+        viewerEmptyState.innerHTML = `
+            <p class="text-base font-semibold">${escapeHtml(title)}</p>
+            <p class="mt-2 text-sm text-muted-foreground">${escapeHtml(description)}</p>
+        `;
+        viewerEmptyState.classList.remove('hidden');
+        viewerResults.classList.add('hidden');
+        viewerFooter.classList.add('hidden');
+    }
+
+    function renderViewerSummary() {
+        if (!viewerState.currentPath) {
+            viewerSummary.textContent = 'Choose a folder to start browsing image files and tags.';
+            viewerCountBadge.textContent = '0 files';
+            return;
+        }
+
+        const loadedCount = viewerState.images.length;
+        const imageWord = viewerState.total === 1 ? 'image file' : 'image files';
+        const scopeLabel = viewerRecursiveCheck.checked ? 'including subdirectories' : 'in this directory';
+        viewerSummary.textContent = `Showing ${loadedCount} of ${viewerState.total} ${imageWord} from ${viewerState.currentPath} (${scopeLabel}).`;
+        viewerCountBadge.textContent = `${viewerState.total} file${viewerState.total === 1 ? '' : 's'}`;
+    }
+
+    function setViewerLoading(loading, append = false) {
+        viewerState.loading = loading;
+        viewerLoadBtn.disabled = loading;
+        viewerLoadMoreBtn.disabled = loading;
+        viewerBrowseBtn.disabled = loading;
+        viewerUseSourceBtn.disabled = loading;
+        viewerRecursiveCheck.disabled = loading;
+        viewerPathInput.disabled = loading;
+        viewerLoadBtn.textContent = loading ? 'Loading...' : 'Load Files';
+        viewerLoadMoreBtn.textContent = loading && append ? 'Loading...' : 'Load More Files';
+    }
+
+    function syncViewerLayoutToggle() {
+        updateViewToggle(viewerGridModeBtn, viewerState.viewMode === 'grid');
+        updateViewToggle(viewerListModeBtn, viewerState.viewMode === 'list');
+    }
+
+    function applyViewerLayout() {
+        viewerResults.className = viewerState.viewMode === 'grid'
+            ? 'grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+            : 'flex flex-col gap-3';
+    }
+
+    function renderViewerTags(item, maxVisibleTags = 4) {
+        const visibleTags = item.tags.slice(0, maxVisibleTags);
+        const extraTags = item.tags.length - visibleTags.length;
+        const tagsMarkup = visibleTags.map((tag) => (
+            `<span class="badge-secondary">${escapeHtml(tag)}</span>`
+        )).join('');
+        const extraTagMarkup = extraTags > 0
+            ? `<span class="badge-secondary">+${extraTags} more</span>`
+            : '';
+        return item.tags.length > 0
+            ? `${tagsMarkup}${extraTagMarkup}`
+            : '<span class="text-xs text-muted-foreground">No XMP tags yet</span>';
+    }
+
+    function renderViewerGallery() {
+        renderViewerSummary();
+        syncViewerLayoutToggle();
+
+        if (viewerState.images.length === 0) {
+            setViewerEmptyState(
+                'No supported image files found',
+                'Try another folder or enable recursive browsing to search subdirectories too.'
+            );
+            return;
+        }
+
+        viewerEmptyState.classList.add('hidden');
+        viewerResults.classList.remove('hidden');
+        applyViewerLayout();
+        viewerResults.innerHTML = '';
+
+        viewerState.images.forEach((item, index) => {
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.dataset.viewerIndex = String(index);
+            const tagBlock = renderViewerTags(item, viewerState.viewMode === 'grid' ? 4 : 6);
+
+            if (viewerState.viewMode === 'grid') {
+                card.className = 'group overflow-hidden rounded-xl border border-border/60 bg-background text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary';
+                card.innerHTML = `
+                    <div class="aspect-[4/3] overflow-hidden bg-muted/30">
+                        <img src="${getViewerImageUrl(item.path)}" alt="${escapeHtml(item.name)}"
+                            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]">
+                    </div>
+                    <div class="space-y-3 p-4">
+                        <div class="space-y-1">
+                            <p class="truncate text-sm font-semibold text-foreground">${escapeHtml(item.name)}</p>
+                            <p class="text-xs text-muted-foreground">${item.tag_count} tag${item.tag_count === 1 ? '' : 's'}</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">${tagBlock}</div>
+                    </div>
+                `;
+            } else {
+                card.className = 'group flex w-full items-start gap-4 rounded-xl border border-border/60 bg-background p-4 text-left shadow-sm transition-all hover:border-primary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary';
+                card.innerHTML = `
+                    <div class="h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-muted/30">
+                        <img src="${getViewerImageUrl(item.path)}" alt="${escapeHtml(item.name)}"
+                            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]">
+                    </div>
+                    <div class="min-w-0 flex-1 space-y-2">
+                        <div class="flex flex-col gap-1 md:flex-row md:items-start md:justify-between">
+                            <div class="min-w-0 space-y-1">
+                                <p class="truncate text-sm font-semibold text-foreground">${escapeHtml(item.name)}</p>
+                                <p class="truncate text-xs text-muted-foreground font-mono">${escapeHtml(item.path)}</p>
+                            </div>
+                            <span class="text-xs text-muted-foreground">${item.tag_count} tag${item.tag_count === 1 ? '' : 's'}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">${tagBlock}</div>
+                    </div>
+                `;
+            }
+
+            card.addEventListener('click', () => openLightboxAt(index));
+            viewerResults.appendChild(card);
+        });
+
+        viewerFooter.classList.toggle('hidden', !viewerState.hasMore);
+    }
+
+    function renderLightbox() {
+        const item = viewerState.images[viewerState.activeIndex];
+        if (!item) {
+            return;
+        }
+
+        lightboxPosition.textContent = `${viewerState.activeIndex + 1} / ${viewerState.images.length}`;
+        lightboxTagCount.textContent = `${item.tag_count} tag${item.tag_count === 1 ? '' : 's'}`;
+        lightboxTitle.textContent = item.name;
+        lightboxPath.textContent = item.path;
+        lightboxCaption.textContent = item.xmp_exists
+            ? 'Showing image preview with tags loaded from its XMP sidecar.'
+            : 'Showing image preview. No XMP sidecar tags were found for this file.';
+        lightboxImage.src = getViewerImageUrl(item.path);
+        lightboxImage.alt = item.name;
+        lightboxTags.innerHTML = item.tags.map((tag) => (
+            `<span class="badge-secondary">${escapeHtml(tag)}</span>`
+        )).join('');
+        lightboxEmptyTags.classList.toggle('hidden', item.tags.length > 0);
+        lightboxPrevBtn.disabled = viewerState.activeIndex === 0;
+        lightboxNextBtn.disabled = viewerState.activeIndex >= viewerState.images.length - 1;
+    }
+
+    function openLightboxAt(index) {
+        if (!viewerState.images[index]) {
+            return;
+        }
+
+        viewerState.activeIndex = index;
+        renderLightbox();
+        const opener = viewerResults.querySelector(`[data-viewer-index="${index}"]`) || viewerLoadBtn;
+        openDialog(lightboxDialog, {
+            opener,
+            onClose: () => {
+                lightboxImage.removeAttribute('src');
+            }
+        });
+    }
+
+    function moveLightbox(step) {
+        const nextIndex = viewerState.activeIndex + step;
+        if (!lightboxDialog.open || nextIndex < 0 || nextIndex >= viewerState.images.length) {
+            return;
+        }
+
+        viewerState.activeIndex = nextIndex;
+        renderLightbox();
+    }
+
     // ----- Initialization -----
 
     async function init() {
@@ -288,6 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
     updateSliderProgress(thresholdInput);
     updateSliderProgress(maxTagsInput);
+    setActiveView('tagger');
 
     // ----- Event Listeners -----
 
@@ -303,6 +564,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modelSelect.addEventListener('change', updateModelWarning);
     startBtn.addEventListener('click', startJob);
+    showTaggerViewBtn.addEventListener('click', () => setActiveView('tagger'));
+    showViewerViewBtn.addEventListener('click', () => setActiveView('viewer'));
 
     clearLogsBtn.addEventListener('click', () => {
         logContainer.innerHTML = '';
@@ -450,6 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
     wireDialog(perfDialog);
     wireDialog(accelDialog);
     wireDialog(filePickerDialog);
+    wireDialog(lightboxDialog);
 
     // Dialog openers — native showModal()
     helpBtn.addEventListener('click', () => openDialog(helpDialog, {
@@ -488,17 +752,78 @@ document.addEventListener('DOMContentLoaded', () => {
         openFilePicker(outputDirInput.value.trim());
     });
 
+    viewerBrowseBtn.addEventListener('click', () => {
+        browseTarget = 'viewer';
+        openFilePicker(viewerPathInput.value.trim());
+    });
+
     cancelFilePickerBtn.addEventListener('click', () => requestDialogClose(filePickerDialog));
     
     selectDirBtn.addEventListener('click', () => {
         if (currentBrowsePath) {
             if (browseTarget === 'output') {
                 outputDirInput.value = currentBrowsePath;
+            } else if (browseTarget === 'viewer') {
+                viewerPathInput.value = currentBrowsePath;
             } else {
                 inputPath.value = currentBrowsePath;
             }
         }
         requestDialogClose(filePickerDialog);
+
+        if (browseTarget === 'viewer' && currentBrowsePath) {
+            setActiveView('viewer');
+            loadViewerDirectory();
+        }
+    });
+
+    viewerLoadBtn.addEventListener('click', () => loadViewerDirectory());
+    viewerLoadMoreBtn.addEventListener('click', () => loadViewerDirectory({ append: true }));
+    viewerGridModeBtn.addEventListener('click', () => {
+        if (viewerState.viewMode !== 'grid') {
+            viewerState.viewMode = 'grid';
+            renderViewerGallery();
+        }
+    });
+    viewerListModeBtn.addEventListener('click', () => {
+        if (viewerState.viewMode !== 'list') {
+            viewerState.viewMode = 'list';
+            renderViewerGallery();
+        }
+    });
+    viewerUseSourceBtn.addEventListener('click', () => {
+        const sourcePath = inputPath.value.trim();
+        if (!sourcePath) {
+            setActiveView('viewer');
+            setViewerError('Choose a source folder first, or browse directly in the viewer.');
+            return;
+        }
+
+        viewerPathInput.value = sourcePath;
+        viewerRecursiveCheck.checked = recursiveCheck.checked;
+        setActiveView('viewer');
+        loadViewerDirectory();
+    });
+    viewerPathInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            loadViewerDirectory();
+        }
+    });
+    lightboxPrevBtn.addEventListener('click', () => moveLightbox(-1));
+    lightboxNextBtn.addEventListener('click', () => moveLightbox(1));
+    document.addEventListener('keydown', (event) => {
+        if (!lightboxDialog.open) {
+            return;
+        }
+
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            moveLightbox(-1);
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            moveLightbox(1);
+        }
     });
 
     // ----- Functions -----
@@ -524,7 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openFilePicker(initialPath = "") {
-        const opener = browseTarget === 'output' ? outputBrowseBtn : browseBtn;
+        const opener = getBrowseOpener();
         openDialog(filePickerDialog, { opener });
         loadDirectory(initialPath);
     }
@@ -573,8 +898,77 @@ document.addEventListener('DOMContentLoaded', () => {
                 dirList.appendChild(btn);
             });
             
-        } catch (e) {
-             dirList.innerHTML = `<div class="p-4 text-center text-sm text-destructive">Failed to load directory</div>`;
+         } catch (e) {
+              dirList.innerHTML = `<div class="p-4 text-center text-sm text-destructive">Failed to load directory</div>`;
+         }
+    }
+
+    async function loadViewerDirectory({ append = false } = {}) {
+        if (viewerState.loading) {
+            return;
+        }
+
+        const path = viewerPathInput.value.trim();
+        if (!path) {
+            setActiveView('viewer');
+            setViewerError('Please choose a folder for the viewer.');
+            return;
+        }
+
+        const offset = append ? viewerState.offset : 0;
+        setActiveView('viewer');
+        setViewerError('');
+        setViewerLoading(true, append);
+
+        if (!append) {
+            viewerState.images = [];
+            viewerState.total = 0;
+            viewerState.offset = 0;
+            viewerState.hasMore = false;
+            viewerState.currentPath = path;
+            viewerSummary.textContent = 'Loading files...';
+            viewerCountBadge.textContent = 'Loading...';
+            setViewerEmptyState('Loading files...', 'Gathering image previews and XMP tags for the selected folder.');
+        }
+
+        try {
+            const params = new URLSearchParams({
+                path,
+                recursive: viewerRecursiveCheck.checked ? 'true' : 'false',
+                offset: String(offset),
+                limit: String(viewerPageSize)
+            });
+            const res = await fetch(`/api/images?${params.toString()}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.detail || 'Failed to load images.');
+            }
+
+            viewerState.currentPath = data.current_path;
+            viewerPathInput.value = data.current_path;
+            viewerState.total = data.total;
+            viewerState.hasMore = data.has_more;
+            viewerState.offset = data.offset + data.images.length;
+            if (append) {
+                viewerState.images = viewerState.images.concat(data.images);
+            } else {
+                viewerState.images = data.images;
+            }
+
+            renderViewerGallery();
+        } catch (error) {
+            viewerState.images = append ? viewerState.images : [];
+            viewerState.total = append ? viewerState.total : 0;
+            viewerState.offset = append ? viewerState.offset : 0;
+            viewerState.hasMore = append ? viewerState.hasMore : false;
+            setViewerError(error.message || 'Failed to load files.');
+            if (!viewerState.images.length) {
+                setViewerEmptyState('Unable to load files', error.message || 'Try another folder and try again.');
+                renderViewerSummary();
+            }
+        } finally {
+            setViewerLoading(false, append);
         }
     }
 

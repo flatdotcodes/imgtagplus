@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from imgtagplus.metadata import _build_xmp, _read_existing_tags, write_xmp
+from imgtagplus.metadata import (
+    _build_xmp,
+    _read_existing_tags,
+    read_xmp_tags,
+    sidecar_path_for_image,
+    write_xmp,
+)
 
 
 def test_write_xmp_creates_sidecar_with_escaped_tags(sample_image: Path) -> None:
@@ -79,3 +85,17 @@ def test_build_xmp_includes_all_tags_and_packet_markers() -> None:
     assert '<rdf:li>alpha</rdf:li>' in xml
     assert '<rdf:li>beta</rdf:li>' in xml
     assert xml.rstrip().endswith('<?xpacket end="w"?>')
+
+
+def test_sidecar_path_for_image_defaults_to_image_directory(sample_image: Path) -> None:
+    assert sidecar_path_for_image(sample_image) == sample_image.with_suffix(".xmp")
+
+
+def test_read_xmp_tags_returns_sorted_tags(sample_image: Path) -> None:
+    write_xmp(sample_image, ["beta", "alpha"])
+
+    assert read_xmp_tags(sample_image) == ["alpha", "beta"]
+
+
+def test_read_xmp_tags_returns_empty_list_when_sidecar_is_missing(sample_image: Path) -> None:
+    assert read_xmp_tags(sample_image) == []

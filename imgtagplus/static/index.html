@@ -29,6 +29,18 @@
             </div>
         </a>
         <div class="flex items-center gap-3">
+            <nav class="flex items-center rounded-lg border border-border bg-muted/40 p-1" aria-label="View switcher">
+                <button id="show-tagger-view" type="button"
+                    class="rounded-md bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-xs transition-colors"
+                    aria-pressed="true">
+                    Tagger
+                </button>
+                <button id="show-viewer-view" type="button"
+                    class="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    aria-pressed="false">
+                    Viewer
+                </button>
+            </nav>
             <span id="status-badge" class="badge-secondary">
                 <span class="w-2 h-2 rounded-full bg-zinc-500" id="status-dot"></span>
                 <span id="status-text">Idle</span>
@@ -45,7 +57,8 @@
         </div>
     </header>
 
-    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-8 relative">
+        <section id="tagger-view" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         <!-- Left Column: Settings -->
         <div class="col-span-1 lg:col-span-4 flex flex-col gap-6">
@@ -266,6 +279,91 @@
             </div>
 
         </div>
+        </section>
+
+        <section id="viewer-view" class="hidden flex flex-col gap-6 animate-fade-in-up">
+            <div class="card">
+                <header>
+                    <h2 class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-primary">
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <circle cx="9" cy="9" r="2" />
+                            <path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21" />
+                        </svg>
+                        Select Folder
+                    </h2>
+                    <p class="text-sm text-muted-foreground">Choose a folder to load image files and inspect their XMP tags in the viewer.</p>
+                </header>
+                <section class="space-y-4">
+                    <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto_auto] xl:items-end">
+                        <div class="grid gap-2">
+                            <label for="viewer-path" class="label">Folder Path</label>
+                            <input type="text" id="viewer-path" class="input" placeholder="/path/to/photos">
+                            <p class="text-xs text-muted-foreground">Use the existing directory browser, then load image files from any selected folder.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 xl:justify-self-end">
+                            <button id="viewer-browse-btn" class="btn-secondary" type="button">Browse</button>
+                            <button id="viewer-use-source-btn" class="btn-outline" type="button">Use Source Folder</button>
+                        </div>
+                        <button id="viewer-load-btn" class="btn" type="button">Load Files</button>
+                    </div>
+                    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                        <label for="viewer-recursive" class="flex items-center justify-between gap-3 text-sm text-muted-foreground">
+                            <span class="label !mb-0">Include subdirectories recursively</span>
+                            <input type="checkbox" id="viewer-recursive" role="switch" class="input">
+                        </label>
+                        <p id="viewer-summary" class="text-sm text-muted-foreground">Choose a folder to start browsing image files and tags.</p>
+                    </div>
+                    <p id="viewer-error-msg" class="text-sm text-destructive hidden"></p>
+                </section>
+            </div>
+
+            <div class="card">
+                <header class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h2 class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="text-primary">
+                                <path d="M3 7h18" />
+                                <path d="M3 12h18" />
+                                <path d="M3 17h18" />
+                            </svg>
+                            Image Files
+                        </h2>
+                        <p class="text-sm text-muted-foreground">Review loaded files as a grid or list, then open any preview in the lightbox.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <nav class="flex items-center rounded-lg border border-border bg-muted/40 p-1" aria-label="Viewer layout switcher">
+                            <button id="viewer-grid-mode" type="button"
+                                class="rounded-md bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-xs transition-colors"
+                                aria-pressed="true">
+                                Grid
+                            </button>
+                            <button id="viewer-list-mode" type="button"
+                                class="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                                aria-pressed="false">
+                                List
+                            </button>
+                        </nav>
+                        <span id="viewer-count-badge" class="badge-secondary">0 files</span>
+                    </div>
+                </header>
+                <section class="space-y-4">
+                    <div id="viewer-empty-state"
+                        class="rounded-lg border border-dashed border-border/70 bg-muted/20 px-6 py-12 text-center">
+                        <p class="text-base font-semibold">No folder loaded yet</p>
+                        <p class="mt-2 text-sm text-muted-foreground">Browse to a folder or reuse the current source folder to start inspecting image files and tags.</p>
+                    </div>
+                    <div id="viewer-results" class="hidden grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"></div>
+                </section>
+                <footer id="viewer-footer" class="hidden">
+                    <button id="viewer-load-more-btn" type="button" class="btn-outline w-full">Load More Files</button>
+                </footer>
+            </div>
+        </section>
     </main>
 
     <!-- Help Dialog -->
@@ -469,6 +567,54 @@
                     <button id="select-dir-btn" class="btn" type="button">Select Current Directory</button>
                 </div>
             </footer>
+        </article>
+    </dialog>
+
+    <!-- Lightbox Dialog -->
+    <dialog id="lightbox-dialog" class="dialog" aria-labelledby="lightbox-title">
+        <article class="!max-w-6xl !max-h-[88vh] w-full">
+            <header>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span id="lightbox-position" class="badge-secondary">1 / 1</span>
+                        <span id="lightbox-tag-count" class="text-xs text-muted-foreground">0 tags</span>
+                    </div>
+                    <h2 id="lightbox-title" class="truncate">Image Viewer</h2>
+                    <p id="lightbox-path" class="text-xs text-muted-foreground font-mono break-all"></p>
+                </div>
+            </header>
+            <button type="button" aria-label="Close dialog" data-dialog-close>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <section class="grid gap-6 overflow-y-auto max-h-[72vh] lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]" tabindex="-1" autofocus>
+                <div class="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div class="flex h-[clamp(20rem,58vh,40rem)] items-center justify-center overflow-hidden rounded-lg bg-black/80">
+                        <img id="lightbox-image" class="h-full w-full object-contain" alt="">
+                    </div>
+                    <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                        <p id="lightbox-caption" class="text-sm text-muted-foreground">Ready to preview.</p>
+                        <div class="flex items-center gap-2">
+                            <button id="lightbox-prev-btn" type="button" class="btn-outline">Previous</button>
+                            <button id="lightbox-next-btn" type="button" class="btn">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="rounded-lg border border-border/60 bg-muted/20 p-4">
+                        <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Tags</p>
+                        <div id="lightbox-tags" class="mt-3 flex flex-wrap gap-2"></div>
+                        <p id="lightbox-empty-tags" class="mt-3 text-sm text-muted-foreground hidden">No XMP tags found for this image yet.</p>
+                    </div>
+                    <div class="rounded-lg border border-border/60 bg-muted/20 p-4">
+                        <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Viewer Tips</p>
+                        <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                            <li>Use Left and Right arrow keys to move between images.</li>
+                            <li>Press Escape or click outside the dialog to close the viewer.</li>
+                            <li>Tags are read from `.xmp` sidecar files next to each image.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
         </article>
     </dialog>
 

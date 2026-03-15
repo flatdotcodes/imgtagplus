@@ -6,6 +6,7 @@
 
 - **AI-powered tagging** — Uses OpenAI's CLIP (fast, zero-shot) or Microsoft Florence-2 (rich VLM captioning and OCR)
 - **Interactive Web UI** — Beautiful, local real-time monitoring of tagging jobs through a browser interface.
+- **Image viewer lightbox** — Browse any selected directory and inspect image files with their XMP tags in built-in grid/list views plus a lightbox viewer.
 - **XMP sidecar files** — Non-destructive; tags saved in `.xmp` files recognised by Lightroom, Bridge, Darktable, digiKam, XnView, etc.
 - **Bulk processing** — Tag a single image or an entire directory tree
 - **Cross-platform** — Works on Linux, macOS, and Windows
@@ -99,6 +100,8 @@ When the local web server is running, FastAPI serves interactive API docs at [`/
 The main endpoints are:
 
 - `GET /api/browse` for sandbox-aware directory browsing
+- `GET /api/images` for listing image previews and XMP tags in a selected directory
+- `GET /api/image` for same-origin image delivery to the browser lightbox
 - `POST /api/tag` to start a tagging run
 - `GET /api/status` to check whether a run is active
 - `GET /api/stream` for SSE progress/log events
