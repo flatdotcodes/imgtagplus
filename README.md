@@ -72,6 +72,25 @@ npm run build:css
 
 Run the CSS build after changing `imgtagplus/static/input.css`.
 
+### Local model cache setup for development
+
+Model weights are **not** meant to live in Git. They are downloaded locally on first use and should stay in your local cache directory instead of being synced to GitHub.
+
+Default cache locations:
+
+- `~/.cache/imgtagplus`
+- repo-local fallback: `.cache/imgtagplus` when the home cache is not writable
+
+The repository ignores `.cache/` so local model downloads stay out of source control.
+
+If you want to warm the cache during setup, run a local one-image pass that writes output somewhere disposable:
+
+```bash
+python -m imgtagplus -i ./test_image.jpg --model-id clip --silent --output-dir /tmp/imgtagplus-model-warmup
+```
+
+To pre-download Florence for local development, repeat the same command with `--model-id florence-2-base`.
+
 ## CLI Options
 
 | Option | Short | Default | Description |

@@ -17,7 +17,11 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+
+# Local model caches and downloaded artifacts
 .cache/
+.cache/imgtagplus/
+.cache/huggingface/
 
 # Local agent / assistant artifacts
 .gemini/

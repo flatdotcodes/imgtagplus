@@ -44,3 +44,6 @@ fi
 
 echo "Setup complete. You can now use the 'imgtagplus' command or run 'python -m imgtagplus.server'."
 echo "To activate the environment in your shell, run: source .venv/bin/activate"
+echo "Model weights are downloaded locally on first use and are not meant to be committed to Git."
+echo "Default cache: ~/.cache/imgtagplus (repo-local fallback: ./.cache/imgtagplus, which is gitignored)."
+echo "Optional cache warm-up: python -m imgtagplus -i ./test_image.jpg --model-id clip --silent --output-dir /tmp/imgtagplus-model-warmup"
