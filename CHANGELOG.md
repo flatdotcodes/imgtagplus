@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- TUI: arrow key (↑/↓) navigation across dashboard action buttons; first button auto-focused on load so keyboard navigation is available without a Tab press.
+- TUI: "Server detected" toast notification at startup when the web UI server is already running, showing the URL and access mode.
+- TUI: `ExitConfirmScreen` modal when quitting with the server running — offers stop-and-exit, keep-running-and-exit, or cancel.
+
+### Changed
+
+- TUI: `q` binding delegates to `ImgTagPlusApp.action_quit()` so both `q` and Ctrl+C funnel through the same exit-confirmation path.
+- TUI: command palette disabled (`ENABLE_COMMAND_PALETTE = False`) — Ctrl+P no longer opens the Textual command launcher.
+
 - Pytest-based test suite for scanner, metadata, profiler, and server validation.
 - Integration tests for `app.run()` pipeline (happy path, continue-on-error, progress callback, overwrite, zero-images).
 - CI workflow with Ruff and pytest checks; Python 3.10/3.11/3.12 matrix; CSS build step.
