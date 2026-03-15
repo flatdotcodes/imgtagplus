@@ -6,10 +6,14 @@ This guide explains how ImgTagPlus is structured today and how its major runtime
 
 ### CLI and server entry points
 
-- `imgtagplus/cli.py` — command-line entry point and interactive manager
+- `imgtagplus/cli.py` — command-line entry point and server daemon helpers
   - starts/stops/restarts the local web server daemon
-  - runs the interactive menu when invoked with no arguments
   - dispatches headless tagging runs into the shared application pipeline
+- `imgtagplus/tui.py` + `imgtagplus/tui.tcss` — Textual terminal UI launched when `imgtagplus` is run with no arguments
+  - keyboard-driven dashboard: arrow keys (↑/↓) navigate action buttons; Tab/Shift-Tab also works
+  - command palette disabled (`ENABLE_COMMAND_PALETTE = False`) — Ctrl+P does nothing
+  - shows a "Server detected" toast at startup when the web UI is already running
+  - exit confirmation dialog (`ExitConfirmScreen`) when quitting with the server running — lets the user stop the server, leave it running, or cancel
 - `imgtagplus/server.py` — FastAPI app for the local web UI
   - serves `/`, `/static/*`, and FastAPI's generated `/docs`
   - exposes local API endpoints under `/api/*`
@@ -86,16 +90,21 @@ When the scanner finds no supported images at the input path:
 - `app.run()` calls `progress_callback(0, 0, "")` to signal an empty result, then returns `0`.
 - The web server emits a WARNING log and the frontend shows a yellow "No Images Found" state.
 
-### 2. Interactive CLI manager flow
+### 2. Interactive TUI flow
 
-When `imgtagplus` runs with no arguments, `cli.py` opens a small menu that can:
+When `imgtagplus` runs with no arguments, `tui.py` launches a Textual terminal UI (`ImgTagPlusApp`) that can:
 
-- start the web server in sandbox mode
-- start the web server with full file system access
+- start the web server in sandbox mode or with full file system access
 - stop or restart the existing server daemon
-- collect a few prompts and then reuse the same `imgtagplus.app.run()` pipeline for headless tagging
+- open a tagging form (`TaggingScreen`) and run the same `imgtagplus.app.run()` pipeline headlessly, with a live progress view
 
-The interactive manager is intentionally thin. It does not implement its own tagging logic.
+Key UX details:
+- arrow keys (↑/↓) navigate the action button list; first button is auto-focused on load
+- `q` and Ctrl+C both route through `ImgTagPlusApp.action_quit()` — if the server is running, an `ExitConfirmScreen` modal asks whether to stop it, leave it running, or cancel
+- a "Server detected" notification is shown at startup when the web UI is already active
+- the command palette is disabled (`ENABLE_COMMAND_PALETTE = False`)
+
+The TUI is intentionally thin. It does not implement its own tagging logic.
 
 ### 3. Web UI flow
 
