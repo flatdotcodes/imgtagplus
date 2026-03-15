@@ -9,6 +9,16 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
 
+Model files are downloaded locally and should not be committed to the repository. The default cache root is `~/.cache/imgtagplus`, with a repo-local fallback at `.cache/imgtagplus` when the home cache is unavailable. The repository ignores `.cache/` so those downloads stay local.
+
+If you want to pre-download the CLIP model during setup, run:
+
+```bash
+python -m imgtagplus -i ./test_image.jpg --model-id clip --silent --output-dir /tmp/imgtagplus-model-warmup
+```
+
+If you also develop against Florence, repeat that command with `--model-id florence-2-base`.
+
 If you change frontend styles, also run:
 
 ```bash

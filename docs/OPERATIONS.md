@@ -23,6 +23,23 @@ pip install -r requirements-clip.txt
 
 `setup.sh` checks the Python version before proceeding and builds frontend CSS automatically when npm is available.
 
+## Model cache
+
+Model assets are downloaded locally and are not intended to be checked into Git.
+
+- default cache: `~/.cache/imgtagplus`
+- repo-local fallback: `.cache/imgtagplus` when the home cache is not writable
+
+The repository ignores `.cache/` so local cache files stay out of source control.
+
+To warm the local cache after setup, run:
+
+```bash
+python -m imgtagplus -i ./test_image.jpg --model-id clip --silent --output-dir /tmp/imgtagplus-model-warmup
+```
+
+For Florence local development, repeat that command with `--model-id florence-2-base`.
+
 ## Server lifecycle
 
 The web UI server is managed by `imgtagplus/cli.py`.
