@@ -12,7 +12,7 @@
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
-    "@tailwindcss/cli": "^4.2.1",
+    "@tailwindcss/cli": "^4.2.2",
     "shadcn": "^4.0.5",
     "tailwindcss": "^4.2.1"
   },
