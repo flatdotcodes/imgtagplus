@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImgTagPlus — AI-Powered Image Tagging for Professionals</title>
+    <meta name="description" content="Enterprise-grade AI image tagging. Local processing, XMP sidecar support, one-time license. Built for DAM teams.">
+    <link rel="icon" href="assets/favicon.ico">
+    
+    <!-- Tailwind CSS v4 via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+                    },
+                    colors: {
+                        primary: {
+                            DEFAULT: '#6366f1',
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                            foreground: '#ffffff',
+                        },
+                        background: {
+                            DEFAULT: '#0a0a0f',
+                            secondary: '#12121a',
+                            tertiary: '#1a1a25',
+                        },
+                        foreground: {
+                            DEFAULT: '#fafafa',
+                            muted: '#a1a1aa',
+                            subtle: '#71717a',
+                        },
+                        border: {
+                            DEFAULT: '#27272a',
+                            hover: '#3f3f46',
+                        },
+                        success: {
+                            DEFAULT: '#22c55e',
+                            muted: '#166534',
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'fade-in-scale': 'fadeInScale 0.6s ease-out forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'gradient': 'gradient 8s linear infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeInScale: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        /* Base Styles */
+        *::before, *::after {
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background-color: #0a0a0f;
+            color: #fafafa;
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        }
+        
+        /* Material Symbols */
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+            vertical-align: middle;
+        }
+        
+        /* Geometric Background Pattern */
+        .geo-pattern {
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+        
+        /* Grid Pattern Overlay */
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        
+        /* Glass Effect */
+        .glass {
+            background: rgba(18, 18, 26, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        /* Glow Effects */
+        .glow-primary {
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
+        }
+        
+        .glow-primary-subtle {
+            box-shadow: 0 0 60px rgba(99, 102, 241, 0.15);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 8s ease infinite;
+        }
+        
+        /* Gradient Border */
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(#12121a, #12121a) padding-box,
+                        linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.3)) border-box;
+            border: 1px solid transparent;
+        }
+        
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Card Styles */
+        .feature-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.02) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Pricing Card */
+        .pricing-card {
+            background: linear-gradient(135deg, rgba(18, 18, 26, 0.8) 0%, rgba(26, 26, 37, 0.8) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .pricing-card.popular {
+            border-color: rgba(99, 102, 241, 0.5);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+        }
+        
+        /* Terminal Window */
+        .terminal {
+            background: #0c0c12;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .terminal-header {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Screenshot Frame */
+        .screenshot-frame {
+            background: linear-gradient(135deg, #1a1a25 0%, #12121a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Navigation Active State */
+        .nav-link {
+            position: relative;
+            color: #a1a1aa;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: #fafafa;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            transition: width 0.2s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+        
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-primary {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+        }
+        
+        /* Checkmark List */
+        .check-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .check-list li::before {
+            content: 'check_circle';
+            font-family: 'Material Symbols Outlined';
+            color: #22c55e;
+            font-size: 20px;
+        }
+        
+        /* Geometric Shapes for Hero */
+        .geo-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .geo-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+        
+        .geo-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+            bottom: 20%;
+            left: -100px;
+            animation-delay: 2s;
+        }
+        
+        .geo-3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+            top: 40%;
+            right: 10%;
+            animation-delay: 4s;
+        }
+        
+        /* Use Case Cards */
+        .use-case-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(18, 18, 26, 0.9) 0%, rgba(26, 26, 37, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .use-case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .use-case-card:hover::before {
+            opacity: 1;
+        }
+        
+        .use-case-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-4px);
+        }
+        
+        /* Grid Lines */
+        .grid-lines {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+            pointer-events: none;
+        }
+        
+        /* Animated Border */
+        @keyframes borderRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .animated-border {
+            position: relative;
+        }
+        
+        .animated-border::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.5), transparent 30%);
+            border-radius: inherit;
+            animation: borderRotate 4s linear infinite;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="geo-pattern antialiased min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+                        <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
+                        <path d="M7 7h.01"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">ImgTagPlus</h1>
+                    <span class="text-xs text-foreground-subtle font-mono">v1.0.0</span>
+                </div>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="nav-link text-sm font-medium">Features</a>
+                <a href="#use-cases" class="nav-link text-sm font-medium">Use Cases</a>
+                <a href="#pricing" class="nav-link text-sm font-medium">Pricing</a>
+                <a href="#installation" class="nav-link text-sm font-medium">Install</a>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="#" class="hidden md:block text-sm text-foreground-muted hover:text-white transition-colors">Docs</a>
+                <a href="https://github.com" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-medium transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <!-- Geometric Background Shapes -->
+        <div class="geo-shape geo-1"></div>
+        <div class="geo-shape geo-2"></div>
+        <div class="geo-shape geo-3"></div>
+        
+        <!-- Grid Lines -->
+        <div class="grid-lines"></div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-6 py-20">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left: Content -->
+                <div class="text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full text-sm font-medium text-primary-300 mb-8 animate-fade-in-up">
+                        <span class="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></span>
+                        Now Available — v1.0.0
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                        AI Image<br>
+                        <span class="gradient-text">Tagging at Scale</span>
+                    </h1>
+                    
+                    <p class="text-lg md:text-xl text-foreground-muted mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s;">
+                        Enterprise-grade image tagging for DAM teams. Local AI processing, XMP sidecar support, one-time licensing. No cloud required.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up" style="animation-delay: 0.3s;">
+                        <a href="#pricing" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-white font-semibold text-lg">
+                            <span class="material-symbols-outlined">download</span>
+                            Get Started Free
+                        </a>
+                        <a href="#features" class="btn-secondary inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-white font-semibold text-lg">
+                            <span class="material-symbols-outlined">play_circle</span>
+                            See How It Works
+                        </a>
+                    </div>
+                    
+                    <!-- Trust Badges -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 mt-12 text-sm text-foreground-subtle animate-fade-in-up" style="animation-delay: 0.4s;">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success">verified</span>
+                            Local Processing
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success">verified</span>
+                            No Subscriptions
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success">verified</span>
+                            Open Source
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Screenshot Preview -->
+                <div class="relative animate-fade-in-scale" style="animation-delay: 0.3s;">
+                    <div class="screenshot-frame glow-primary-subtle">
+                        <div class="rounded-lg overflow-hidden bg-background-secondary">
+                            <div class="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/5">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                                <span class="ml-4 text-xs text-foreground-subtle font-mono">ImgTagPlus — Web UI</span>
+                            </div>
+                            <img src="screenshots/web-ui-dark.png" alt="ImgTagPlus Web UI" class="w-full">
+                        </div>
+                    </div>
+                    
+                    <!-- Floating Stats Cards -->
+                    <div class="absolute -top-4 -right-4 glass rounded-xl p-4 border border-white/10 animate-float" style="animation-delay: 0s;">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary-400">speed</span>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">10x</div>
+                                <div class="text-xs text-foreground-subtle">Faster Tagging</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute -bottom-4 -left-4 glass rounded-xl p-4 border border-white/10 animate-float" style="animation-delay: 1s;">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-success/20 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-success">tag</span>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">600+</div>
+                                <div class="text-xs text-foreground-subtle">AI Tags</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="badge badge-primary mb-4">
+                    <span class="material-symbols-outlined text-sm">auto_awesome</span>
+                    Features
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Built for Professional Workflows</h2>
+                <p class="text-foreground-muted max-w-2xl mx-auto text-lg">
+                    Everything you need to tag, organize, and manage image libraries at scale
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="feature-card p-6 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-700/20 flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary-400 text-2xl">model_training</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Dual AI Models</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed">
+                        Choose between lightning-fast CLIP for bulk tagging or detailed Florence-2 for rich captions and OCR.
+                    </p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card p-6 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-700/20 flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary-400 text-2xl">folder_copy</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">XMP Sidecar Files</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed">
+                        Non-destructive metadata storage compatible with Lightroom, Bridge, Darktable, digiKam, and more.
+                    </p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card p-6 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-700/20 flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary-400 text-2xl">computer</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Hardware Acceleration</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed">
+                        Automatic detection of CUDA, MPS (Apple Silicon), or CPU with performance ratings and optimizations.
+                    </p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="feature-card p-6 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-700/20 flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary-400 text-2xl">web</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Web UI & API</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed">
+                        Beautiful browser-based interface with real-time progress, file browser, image viewer, and REST API.
+                    </p>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="feature-card p-6 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-700/20 flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary-400 text-2xl">terminal</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">CLI & TUI</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed">
+                        Powerful command-line interface plus an interactive Textual TUI for terminal-centric workflows.
+                    </p>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="feature-card p-6 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-700/20 flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary-400 text-2xl">visibility</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Image Viewer</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed">
+                        Built-in lightbox with grid/list views to browse and inspect tagged images with metadata.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="py-24 relative bg-background-secondary/30">
+        <div class="grid-lines"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <div class="badge badge-primary mb-4">
+                    <span class="material-symbols-outlined text-sm">business</span>
+                    Industries
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Trusted by Professionals</h2>
+                <p class="text-foreground-muted max-w-2xl mx-auto text-lg">
+                    See how different industries use ImgTagPlus to transform their image workflows
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Use Case 1: DAM Teams -->
+                <div class="use-case-card p-8">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-blue-400 text-3xl">folder_managed</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Digital Asset Management</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed mb-6">
+                        Enterprise DAM teams process thousands of assets daily. ImgTagPlus integrates seamlessly with existing workflows, writing XMP metadata that syncs across Adobe Creative Cloud and enterprise platforms.
+                    </p>
+                    <ul class="text-sm text-foreground-subtle space-y-2">
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            Batch process 10K+ images
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            XMP compatibility
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            LDAP/SSO ready
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Use Case 2: Marketing Agencies -->
+                <div class="use-case-card p-8">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-purple-400 text-3xl">campaign</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Marketing & Creative</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed mb-6">
+                        Creative teams need to find the right image fast. Auto-generated tags make campaign assets discoverable, reducing time spent searching through libraries by up to 80%.
+                    </p>
+                    <ul class="text-sm text-foreground-subtle space-y-2">
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            Instant asset discovery
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            Brand-consistent tagging
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            Campaign organization
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Use Case 3: Archival -->
+                <div class="use-case-card p-8">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-amber-400 text-3xl">museum</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Archives & Museums</h3>
+                    <p class="text-foreground-muted text-sm leading-relaxed mb-6">
+                        Cultural institutions digitize millions of artifacts. Florence-2's detailed captioning helps archivists create rich metadata for historical photos and documents.
+                    </p>
+                    <ul class="text-sm text-foreground-subtle space-y-2">
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            Detailed visual descriptions
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            OCR for text extraction
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success text-lg">check</span>
+                            Non-destructive workflow
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-24 relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="badge badge-primary mb-4">
+                    <span class="material-symbols-outlined text-sm">payments</span>
+                    Pricing
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Simple, One-Time Pricing</h2>
+                <p class="text-foreground-muted max-w-2xl mx-auto text-lg">
+                    No subscriptions. No cloud costs. Pay once, own forever.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Free Tier -->
+                <div class="pricing-card rounded-2xl p-8">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">Starter</h3>
+                        <p class="text-foreground-muted text-sm">For individuals and small projects</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <span class="text-5xl font-bold text-white">Free</span>
+                        <span class="text-foreground-subtle ml-2">forever</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8 text-sm text-foreground-muted">
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            CLIP model only
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Up to 1,000 images/month
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Web UI access
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            CLI & TUI
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            XMP sidecar export
+                        </li>
+                        <li class="flex items-center gap-3 opacity-40">
+                            <span class="material-symbols-outlined">remove</span>
+                            Florence-2 model
+                        </li>
+                        <li class="flex items-center gap-3 opacity-40">
+                            <span class="material-symbols-outlined">remove</span>
+                            Priority support
+                        </li>
+                    </ul>
+                    
+                    <button class="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all">
+                        Download Free
+                    </button>
+                </div>
+                
+                <!-- Pro Tier -->
+                <div class="pricing-card popular rounded-2xl p-8 relative">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+                        <span class="px-4 py-1 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-sm font-medium rounded-full">
+                            Most Popular
+                        </span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">Professional</h3>
+                        <p class="text-foreground-muted text-sm">For power users and teams</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <span class="text-5xl font-bold text-white">$29</span>
+                        <span class="text-foreground-subtle ml-2">one-time</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8 text-sm text-foreground-muted">
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            CLIP + Florence-2 models
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Unlimited images
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Advanced configuration
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Custom tag vocabularies
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            API access
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Batch processing scripts
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Email support
+                        </li>
+                    </ul>
+                    
+                    <button class="btn-primary w-full py-3 rounded-xl text-white font-medium">
+                        Buy Now — $29
+                    </button>
+                </div>
+                
+                <!-- Enterprise Tier -->
+                <div class="pricing-card rounded-2xl p-8">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">Enterprise</h3>
+                        <p class="text-foreground-muted text-sm">For organizations with custom needs</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <span class="text-5xl font-bold text-white">Custom</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8 text-sm text-foreground-muted">
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Everything in Pro
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Custom model training
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            LDAP/SSO integration
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            On-premise deployment
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Priority support
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            SLA guarantee
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-success">check_circle</span>
+                            Custom development
+                        </li>
+                    </ul>
+                    
+                    <button class="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all">
+                        Contact Sales
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Upgrade Promo -->
+            <div class="mt-12 text-center">
+                <p class="text-foreground-muted">
+                    <span class="text-foreground font-medium">Upgrading from v1?</span> 
+                    Get the Pro license for just <span class="text-primary-400 font-bold">$19</span> — limited time offer
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Gallery -->
+    <section id="screenshots" class="py-24 relative bg-background-secondary/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="badge badge-primary mb-4">
+                    <span class="material-symbols-outlined text-sm">photo_library</span>
+                    Gallery
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">See It In Action</h2>
+                <p class="text-foreground-muted max-w-2xl mx-auto text-lg">
+                    Every view, every feature, both dark and light
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Gallery Item 1 -->
+                <div class="group">
+                    <div class="screenshot-frame">
+                        <div class="rounded-lg overflow-hidden bg-background-secondary">
+                            <div class="flex items-center gap-2 px-4 py-2 bg-white/5 border-b border-white/5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+                                <span class="ml-3 text-xs text-foreground-subtle font-mono">Tagger Interface — Dark Mode</span>
+                            </div>
+                            <img src="screenshots/web-ui-dark.png" alt="Tagger Interface" class="w-full">
+                        </div>
+                    </div>
+                    <p class="mt-4 text-center text-sm text-foreground-muted">Main tagging interface with real-time progress</p>
+                </div>
+                
+                <!-- Gallery Item 2 -->
+                <div class="group">
+                    <div class="screenshot-frame">
+                        <div class="rounded-lg overflow-hidden bg-background-secondary">
+                            <div class="flex items-center gap-2 px-4 py-2 bg-white/5 border-b border-white/5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+                                <span class="ml-3 text-xs text-foreground-subtle font-mono">Image Viewer</span>
+                            </div>
+                            <img src="screenshots/web-ui-viewer.png" alt="Image Viewer" class="w-full">
+                        </div>
+                    </div>
+                    <p class="mt-4 text-center text-sm text-foreground-muted">Browse and inspect tagged images with metadata</p>
+                </div>
+                
+                <!-- Gallery Item 3 -->
+                <div class="group">
+                    <div class="screenshot-frame">
+                        <div class="rounded-lg overflow-hidden bg-background-secondary">
+                            <div class="flex items-center gap-2 px-4 py-2 bg-white/5 border-b border-white/5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+                                <span class="ml-3 text-xs text-foreground-subtle font-mono">Performance Dialog</span>
+                            </div>
+                            <img src="screenshots/web-ui-perf-dialog.png" alt="Performance Dialog" class="w-full">
+                        </div>
+                    </div>
+                    <p class="mt-4 text-center text-sm text-foreground-muted">Hardware detection and performance ratings</p>
+                </div>
+                
+                <!-- Gallery Item 4 -->
+                <div class="group">
+                    <div class="screenshot-frame">
+                        <div class="rounded-lg overflow-hidden bg-background-secondary">
+                            <div class="flex items-center gap-2 px-4 py-2 bg-white/5 border-b border-white/5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+                                <span class="ml-3 text-xs text-foreground-subtle font-mono">File Browser</span>
+                            </div>
+                            <img src="screenshots/web-ui-file-picker.png" alt="File Browser" class="w-full">
+                        </div>
+                    </div>
+                    <p class="mt-4 text-center text-sm text-foreground-muted">Sandboxed file browser with security controls</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLI Section -->
+    <section id="cli" class="py-24 relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left: Content -->
+                <div>
+                    <div class="badge badge-primary mb-4">
+                        <span class="material-symbols-outlined text-sm">terminal</span>
+                        Developer Friendly
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">Terminal Power</h2>
+                    <p class="text-foreground-muted text-lg mb-8">
+                        Command-line interface for automation, scripting, and headless deployment. Perfect for CI/CD pipelines and batch processing.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-primary-400">integration_instructions</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-1">REST API</h4>
+                                <p class="text-sm text-foreground-muted">Full HTTP API with OpenAPI documentation</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-primary-400">automation</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-1">Automation Ready</h4>
+                                <p class="text-sm text-foreground-muted">Scriptable with exit codes and JSON output</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-primary-400">event</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-1">Real-time Events</h4>
+                                <p class="text-sm text-foreground-muted">SSE stream for progress monitoring</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Terminal Demo -->
+                <div class="space-y-4">
+                    <!-- Terminal 1 -->
+                    <div class="terminal">
+                        <div class="terminal-header px-4 py-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                            </div>
+                            <span class="text-xs text-foreground-subtle font-mono">bash</span>
+                        </div>
+                        <div class="p-4 font-mono text-sm">
+                            <div class="text-foreground-subtle mb-2"># Start the Web UI server</div>
+                            <div class="mb-3">
+                                <span class="text-success">$</span>
+                                <span class="text-white ml-2">imgtagplus --start-server</span>
+                            </div>
+                            <div class="text-foreground-subtle mb-1">Starting ImgTagPlus Web UI...</div>
+                            <div class="text-foreground-subtle">Server started on http://127.0.0.1:5000</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Terminal 2 -->
+                    <div class="terminal">
+                        <div class="terminal-header px-4 py-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                            </div>
+                            <span class="text-xs text-foreground-subtle font-mono">bash</span>
+                        </div>
+                        <div class="p-4 font-mono text-sm">
+                            <div class="text-foreground-subtle mb-2"># Tag a directory with Florence-2</div>
+                            <div>
+                                <span class="text-success">$</span>
+                                <span class="text-white ml-2">imgtagplus -i ./photos/ -r --model-id florence-2-base</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="py-24 relative bg-background-secondary/30">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="badge badge-primary mb-4">
+                    <span class="material-symbols-outlined text-sm">rocket_launch</span>
+                    Get Started
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Install in Minutes</h2>
+                <p class="text-foreground-muted text-lg">
+                    Cross-platform support for macOS, Linux, and Windows
+                </p>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Step 1 -->
+                <div class="gradient-border rounded-2xl p-1">
+                    <div class="bg-background-secondary rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+                                1
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-semibold text-white mb-3">Clone and Install</h3>
+                                <div class="terminal">
+                                    <div class="terminal-header px-4 py-2 flex items-center justify-between">
+                                        <span class="text-xs text-foreground-subtle font-mono">terminal</span>
+                                    </div>
+                                    <div class="p-4 font-mono text-sm overflow-x-auto">
+                                        <div class="text-foreground-subtle mb-1"># Clone the repository</div>
+                                        <div class="text-primary-400">git clone https://github.com/yourusername/imgtagplus.git</div>
+                                        <div class="text-primary-400">cd imgtagplus</div>
+                                        <div class="text-foreground-subtle mt-2 mb-1"># Install dependencies</div>
+                                        <div class="text-primary-400">pip install -r requirements.txt</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="gradient-border rounded-2xl p-1">
+                    <div class="bg-background-secondary rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+                                2
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-semibold text-white mb-3">Launch the Application</h3>
+                                <div class="terminal">
+                                    <div class="terminal-header px-4 py-2 flex items-center justify-between">
+                                        <span class="text-xs text-foreground-subtle font-mono">terminal</span>
+                                    </div>
+                                    <div class="p-4 font-mono text-sm overflow-x-auto">
+                                        <div class="text-foreground-subtle mb-1"># Interactive menu (TUI)</div>
+                                        <div class="text-primary-400">imgtagplus</div>
+                                        <div class="text-foreground-subtle mt-2 mb-1"># Or start Web UI directly</div>
+                                        <div class="text-primary-400">imgtagplus --start-server</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="gradient-border rounded-2xl p-1">
+                    <div class="bg-background-secondary rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+                                3
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-semibold text-white mb-3">Start Tagging</h3>
+                                <p class="text-foreground-muted mb-4">
+                                    Open <code class="bg-white/5 px-2 py-1 rounded text-primary-400">http://127.0.0.1:5000</code> in your browser, select a folder, and click "Start Tagging"
+                                </p>
+                                <div class="flex flex-wrap gap-4">
+                                    <div class="flex items-center gap-2 text-sm text-foreground-muted">
+                                        <span class="material-symbols-outlined text-success">check_circle</span>
+                                        Local processing
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm text-foreground-muted">
+                                        <span class="material-symbols-outlined text-success">check_circle</span>
+                                        No cloud required
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm text-foreground-muted">
+                                        <span class="material-symbols-outlined text-success">check_circle</span>
+                                        Private & secure
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-primary-500/5 to-transparent"></div>
+        <div class="geo-shape geo-1" style="opacity: 0.3;"></div>
+        <div class="geo-shape geo-2" style="opacity: 0.3;"></div>
+        
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to Transform Your Image Workflow?</h2>
+            <p class="text-foreground-muted text-lg mb-8 max-w-2xl mx-auto">
+                Join thousands of professionals who have streamlined their image tagging with ImgTagPlus. Start free, upgrade when you're ready.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#pricing" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-white font-semibold text-lg">
+                    <span class="material-symbols-outlined">download</span>
+                    Get Started Free
+                </a>
+                <a href="#" class="btn-secondary inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-white font-semibold text-lg">
+                    <span class="material-symbols-outlined">description</span>
+                    Read Documentation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <!-- Brand -->
+                <div class="md:col-span-2">
+                    <a href="#" class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+                                <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
+                                <path d="M7 7h.01"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold text-white">ImgTagPlus</span>
+                    </a>
+                    <p class="text-foreground-muted text-sm max-w-sm">
+                        Enterprise-grade AI image tagging for professionals. Local processing, XMP sidecar support, one-time licensing.
+                    </p>
+                </div>
+                
+                <!-- Links -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Product</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#features" class="text-foreground-muted hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#pricing" class="text-foreground-muted hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="#" class="text-foreground-muted hover:text-white transition-colors">Changelog</a></li>
+                        <li><a href="#" class="text-foreground-muted hover:text-white transition-colors">Roadmap</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-foreground-muted hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#" class="text-foreground-muted hover:text-white transition-colors">API Reference</a></li>
+                        <li><a href="https://github.com" target="_blank" class="text-foreground-muted hover:text-white transition-colors">GitHub</a></li>
+                        <li><a href="#" class="text-foreground-muted hover:text-white transition-colors">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-foreground-subtle">
+                    © 2024 ImgTagPlus. Released under the MIT License.
+                </p>
+                <div class="flex items-center gap-6 text-sm text-foreground-subtle">
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms</a>
+                    <a href="#" class="hover:text-white transition-colors">License</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements with animation classes
+        document.querySelectorAll('.animate-fade-in-up').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+        
+        document.querySelectorAll('.animate-fade-in-scale').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'scale(0.95)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+        
+        // Navigation background on scroll
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.classList.add('shadow-lg');
+                nav.style.background = 'rgba(10, 10, 15, 0.95)';
+            } else {
+                nav.classList.remove('shadow-lg');
+                nav.style.background = 'rgba(18, 18, 26, 0.8)';
+            }
+        });
+    </script>
+</body>
+</html>
